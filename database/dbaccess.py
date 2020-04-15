@@ -8,7 +8,7 @@ from panda3d.core import *
 class GraspDB(object):
 
     def __init__(self):
-        self.dbconnection = mdb.connect("localhost", "weiweilab", "weiweilab", "freegrip")
+        self.dbconnection = mdb.connect("localhost", "root", "dlw", "freegrip")
         self.cursor = self.dbconnection.cursor()
 
     def execute(self, sql):
@@ -22,7 +22,7 @@ class GraspDB(object):
         try:
             self.cursor.execute(sql)
         except mdb.Error as e:
-            print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+            print ("MySQL Error [%d]: %s" % (e.args[0], e.args[1]))
             self.dbconnection.rollback()
             raise mdb.Error
 
@@ -49,7 +49,7 @@ class GraspDB(object):
             self.cursor.execute("SET SQL_SAFE_UPDATES = 1")
             self.cursor.execute("SET FOREIGN_KEY_CHECKS = 1")
         except mdb.Error as e:
-            print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+            print ("MySQL Error [%d]: %s" % (e.args[0], e.args[1]))
             self.dbconnection.rollback()
             self.cursor.execute("SET SQL_SAFE_UPDATES = 1")
             self.cursor.execute("SET FOREIGN_KEY_CHECKS = 1")
@@ -80,10 +80,15 @@ class GraspDB(object):
                 freeairgrip.jawwidth FROM freeairgrip, hand, object \
                 WHERE freeairgrip.idobject = object.idobject AND object.name like '%s' \
                 AND freeairgrip.idhand = hand.idhand AND hand.name like '%s'" % (objname, handname)
+        # AND freeairgrip.idhand = hand.idhand
+        # AND hand.name like '%s'" % (objname, handname)
         data = self.execute(sql)
+        print("loadFreeAirGrip: objname = " + str(objname) + ", handname = " + str(handname) + ", len(data) = " + str(len(data)))
         if len(data) != 0:
             for i in range(len(data)):
-                freegripid.append(int(data[i][0]))
+                # DLW TODO
+                # freegripid.append(int(data[i][0]))
+                freegripid.append(i)
                 freegripcontacts.append([dc.strToV3(data[i][1]), dc.strToV3(data[i][2])])
                 freegripnormals.append([dc.strToV3(data[i][3]), dc.strToV3(data[i][4])])
                 freegriprotmats.append(dc.strToMat4(data[i][5]))
@@ -117,7 +122,7 @@ class GraspDB(object):
 
             return tpsmat4s
         else:
-            print "Plan tabletoplacements using freetabletopplacement.removebadfacets first!"
+            print ("Plan tabletoplacements using freetabletopplacement.removebadfacets first!")
             return None
 
     def loadIKRet(self):
@@ -139,11 +144,13 @@ class GraspDB(object):
     def loadIdHand(self, handname):
         sql = "SELECT idhand FROM hand WHERE name = '%s'" % handname
         result = self.execute(sql)
-        print result
+        print (result)
+        print(len(result))
         if len(result) != 0:
             idhand = int(result[0][0])
         else:
             assert "No hand found in hand table!"
+            idhand = -1
         return idhand
 
     def loadIdArm(self, armname):
@@ -219,7 +226,7 @@ class GraspDB(object):
         idrobot = self.loadIdRobot(robot)
         idobj = self.loadIdObject(objname)
         idhand = self.loadIdHand(handname)
-        print idobj, idhand
+        print (idobj, idhand)
         # delete freeairgrip
         sql = "DELETE FROM freeairgrip \
                 WHERE freeairgrip.idobject = %d AND \

@@ -1,6 +1,6 @@
 import math
 import numpy as np
-import exceptions as ep
+# import exceptions as ep
 import copy
 
 def eubik(pos, armid="rgt"):
@@ -111,7 +111,7 @@ def jacobian(hrp5robot, armid="rgt"):
     """
 
     if armid!="rgt" and armid!="lft":
-        raise ep.ValueError
+        raise ValueError
 
     armlj = hrp5robot.rgtarm
     if armid == "lft":
@@ -157,7 +157,7 @@ def tcperror(hrp5robot, tgtpos, tgtrot, armid="rgt"):
     """
 
     if armid!="rgt" and armid!="lft":
-        raise ep.ValueError
+        raise ValueError
 
     armlj = hrp5robot.rgtarm
     if armid == "lft":
@@ -201,7 +201,7 @@ def numik(hrp5robot, tgtpos, tgtrot, armid="rgt"):
     """
 
     if armid!="rgt" and armid!="lft":
-        raise ep.ValueError
+        raise ValueError
 
     # stablizer
     steplength = 30
@@ -213,7 +213,7 @@ def numik(hrp5robot, tgtpos, tgtrot, armid="rgt"):
             err = tcperror(hrp5robot, tgtpos, tgtrot, armid)
             dq = steplength*(np.linalg.solve(armjac, err))
         else:
-            print "The Jacobian Matrix of the specified arm is at singularity"
+            print("The Jacobian Matrix of the specified arm is at singularity")
             hrp5robot.movearmfk6(armjntssave, armid)
             return None
         if np.linalg.norm(err)<1e-4:
@@ -230,7 +230,7 @@ def numik(hrp5robot, tgtpos, tgtrot, armid="rgt"):
             # the robot may encounter overrange errors in the first few iterations
             # use i<50 to avoid these errors
             if hrp5robot.chkrng6(armjntsiter, armid) or i < 50:
-                # print armjntsiter
+                # print(armjntsiter)
                 hrp5robot.movearmfk6(armjntsiter, armid)
                 # import hrp5plot
                 # hrp5plot.plotstick(base.render, hrp5robot)
@@ -282,9 +282,9 @@ def numikr(hrp5robot, tgtpos, tgtrot, armid="rgt"):
 
 if __name__=="__main__":
     pos = [300,300,0]
-    print eubik(pos)
+    print(eubik(pos))
 
     try:
-        print math.asin(145/np.linalg.norm(pos[0:1]))
+        print(math.asin(145/np.linalg.norm(pos[0:1])))
     except:
-        print "nontriangle"
+        print("nontriangle")

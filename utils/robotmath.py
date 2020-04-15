@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from scipy import weave
+# from scipy import weave
 
 # def rodrigues(axis, theta, mat = None):
 #     '''

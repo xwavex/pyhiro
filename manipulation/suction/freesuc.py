@@ -96,7 +96,7 @@ class Freesuc(object):
             self.objsamplepnts_refcls, self.objsamplenrmls_refcls = \
             pickle.load(open(filename, mode="rb"))
         except:
-            print str(sys.exc_info()[0])+" cannot load tmpcp.pickle"
+            print(str(sys.exc_info()[0])+" cannot load tmpcp.pickle")
             raise
 
     def saveSerialized(self, filename):
@@ -121,7 +121,7 @@ class Freesuc(object):
         samples, face_idx = manipulation.suction.sample.sample_surface_even(self.objtrimesh,
                                                                             count=(1000 if nverts*numpointsoververts > 1000 \
                                                                   else nverts*numpointsoververts))
-        # print nverts
+        # print(nverts)
         self.objsamplepnts = np.ndarray(shape=(self.facets.shape[0],), dtype=np.object)
         self.objsamplenrmls = np.ndarray(shape=(self.facets.shape[0],), dtype=np.object)
         for i, faces in enumerate(self.facets):
@@ -159,8 +159,8 @@ class Freesuc(object):
         self.objsamplenrmls_ref = np.ndarray(shape=(self.facets.shape[0],), dtype=np.object)
         self.facet2dbdries = []
         for i, faces in enumerate(self.facets):
-            # print "removebadsample"
-            # print i,len(self.facets)
+            # print("removebadsample")
+            # print(i,len(self.facets))
             facetp = None
             face0verts = self.objtrimesh.vertices[self.objtrimesh.faces[faces[0]]]
             facetmat = robotmath.rotmatfacet(self.facetnormals[i], face0verts[0], face0verts[1])
@@ -236,8 +236,8 @@ class Freesuc(object):
                 #         boundaryedges.remove([faceverts[0], faceverts[2]])
                 #     except:
                 #         boundaryedges.append([faceverts[2], faceverts[0]])
-                # print boundaryedges
-                # print len(boundaryedges)
+                # print(boundaryedges)
+                # print(len(boundaryedges))
                 # TODO: compute boundary polygons, both outsider and inner should be considered
                 # assort boundaryedges
                 # boundarypolygonlist = []
@@ -246,8 +246,8 @@ class Freesuc(object):
                 # for i in range(len(boundaryedges)-1):
                 #     vertpivot = boundarypolygon[i][1]
                 #     boundarypolygon.append(boundaryedges[boundaryedgesfirstcolumn.index(vertpivot)])
-                # print boundarypolygon
-                # print len(boundarypolygon)
+                # print(boundarypolygon)
+                # print(len(boundarypolygon))
                 # return boundaryedges, boundarypolygon
 
     def clusterFacetSamplesKNN(self, reduceRatio=3, maxNPnts=5):
@@ -292,8 +292,8 @@ class Freesuc(object):
         self.objsamplepnts_refcls = np.ndarray(shape=(self.facets.shape[0],), dtype=np.object)
         self.objsamplenrmls_refcls = np.ndarray(shape=(self.facets.shape[0],), dtype=np.object)
         for i, facet in enumerate(self.facets):
-            # print "cluster"
-            # print i,len(self.facets)
+            # print("cluster")
+            # print(i,len(self.facets))
             self.objsamplepnts_refcls[i] = []
             self.objsamplenrmls_refcls[i] = []
             X = self.objsamplepnts_ref[i]
@@ -356,14 +356,14 @@ class Freesuc(object):
         self.counter = 0
 
         while self.counter < self.facets.shape[0]:
-            # print str(self.counter) + "/" + str(self.facetpairs.shape[0]-1)
-            # print self.gripcontactpairs_precc
+            # print(str(self.counter) + "/" + str(self.facetpairs.shape[0]-1))
+            # print(self.gripcontactpairs_precc)
 
             for i in range(self.objsamplepnts_refcls[self.counter].shape[0]):
                 for angleid in range(discretesize):
                     cctpnt = self.objsamplepnts_refcls[self.counter][i] + plotoffsetfp * self.objsamplenrmls_refcls[self.counter][i]
                     # check torque resistance
-                    print Vec3(cctpnt[0],cctpnt[1],cctpnt[2]).length()
+                    print(Vec3(cctpnt[0],cctpnt[1],cctpnt[2]).length())
                     if Vec3(cctpnt[0],cctpnt[1],cctpnt[2]).length() < self.torqueresist:
                         cctnrml = self.objsamplenrmls_refcls[self.counter][i]
                         rotangle = 360.0 / discretesize * angleid
@@ -567,7 +567,7 @@ if __name__=='__main__':
     this_dir, this_filename = os.path.split(__file__)
     objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "sandpart2.stl")
     freesuctst = Freesuc(objpath, handpkg = handpkg, torqueresist = 500)
-    print len(freesuctst.objtrimesh.faces)
+    print(len(freesuctst.objtrimesh.faces))
     # freegriptst.objtrimesh.show()
     import time
     tic = time.clock()
@@ -581,7 +581,7 @@ if __name__=='__main__':
     # pg.plotAxisSelf(base.render, Vec3(0,0,0))
     freesuctst.removeHndcc(base)
     toc = time.clock()
-    print toc-tic
+    print(toc-tic)
 
     # freesuctst.segShow(base, togglesamples=False, togglenormals=False,
     #                     togglesamples_ref=False, togglenormals_ref=False,
@@ -687,7 +687,7 @@ if __name__=='__main__':
 
     # def updateshow(task):
     #     freegriptst.pairShow(base, togglecontacts=True, togglecontactnormals=True)
-    #     print task.delayTime
+    #     print(task.delayTime)
     #     if abs(task.delayTime-13) < 1:
     #         task.delayTime -= 12.85
     #     return task.again

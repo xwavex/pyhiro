@@ -17,7 +17,7 @@ from sklearn.neighbors import RadiusNeighborsClassifier
 
 import pandaplotutils.pandactrl as pandactrl
 import pandaplotutils.pandageom as pandageom
-import sample
+from . import sample
 import sys
 import trimesh
 from utils import robotmath
@@ -26,6 +26,7 @@ import pickle
 class FreegripContactpairs(object):
 
     def __init__(self, ompath, readser=False):
+        print("FreegripContactpairs: 1")
         self.objtrimesh = None
         # the sampled points and their normals
         self.objsamplepnts = None
@@ -52,15 +53,21 @@ class FreegripContactpairs(object):
         self.facetcolorarray = None
         self.counter = 0
         if readser is False:
+            print("FreegripContactpairs: 1a")
             self.loadObjModel(ompath)
+            print("FreegripContactpairs: 1aa")
             self.saveSerialized("tmpnocp.pickle")
         else:
+            print("FreegripContactpairs: 1b")
             self.loadSerialized("tmpnocp.pickle", ompath)
 
     def loadObjModel(self, ompath):
+        print("FreegripContactpairs (loadObjModel): 1")
         self.objtrimesh=trimesh.load_mesh(ompath)
+        print("FreegripContactpairs (loadObjModel): 2")
         # oversegmentation
         self.facets, self.facetnormals = self.objtrimesh.facets_over(faceangle=.95, segangle = .95)
+        print("FreegripContactpairs (loadObjModel): 3")
         # self.facets, self.facetnormals = self.objtrimesh.facets_over(faceangle=.95)
         # conventional approach
         # self.facets = self.objtrimesh.facets()
@@ -70,7 +77,9 @@ class FreegripContactpairs(object):
         #     facetnormal = facetnormal/np.linalg.norm(facetnormal)
         #     self.facetnormals.append(facetnormal)
         self.facetcolorarray = pandageom.randomColorArray(self.facets.shape[0])
+        print("FreegripContactpairs (loadObjModel): 4")
         self.sampleObjModel()
+        print("FreegripContactpairs (loadObjModel): 5")
 
     def loadSerialized(self, filename, ompath):
         self.objtrimesh=trimesh.load_mesh(ompath)
@@ -81,7 +90,7 @@ class FreegripContactpairs(object):
             self.gripcontactpairs, self.gripcontactpairnormals, self.gripcontactpairfacets = \
             pickle.load(open(filename, mode="rb"))
         except:
-            print str(sys.exc_info()[0])+" cannot load tmpcp.pickle"
+            print(str(sys.exc_info()[0])+" cannot load tmpcp.pickle")
             raise
 
     def saveSerialized(self, filename):
@@ -141,10 +150,13 @@ class FreegripContactpairs(object):
         '''
 
         # ref = refine
+        print("FreegripContactpairs (removeBadSamples): 1")
         self.objsamplepnts_ref = np.ndarray(shape=(self.facets.shape[0],), dtype=np.object)
         self.objsamplenrmls_ref = np.ndarray(shape=(self.facets.shape[0],), dtype=np.object)
         self.facet2dbdries = []
+        debuglen = len(self.facets)
         for i, faces in enumerate(self.facets):
+            print("FreegripContactpairs (removeBadSamples): 1 " + str(i) + "/" + str(debuglen))
             # print "removebadsample"
             # print i,len(self.facets)
             facetp = None
@@ -187,9 +199,13 @@ class FreegripContactpairs(object):
                         selectedele.append(j)
                 except:
                     pass
+            print("FreegripContactpairs (removeBadSamples): 5")
             self.objsamplepnts_ref[i] = np.asarray([self.objsamplepnts[i][j] for j in selectedele])
+            print("FreegripContactpairs (removeBadSamples): 6")
             self.objsamplenrmls_ref[i] = np.asarray([self.objsamplenrmls[i][j] for j in selectedele])
+        print("FreegripContactpairs (removeBadSamples): 7")
         self.facet2dbdries = np.array(self.facet2dbdries)
+        print("FreegripContactpairs (removeBadSamples): 8")
 
             # if i is 3:
             #     for j, apntp in enumerate(samplepntsp):
@@ -720,7 +736,7 @@ if __name__=='__main__':
     # objpath = os.path.join(this_dir, "objects", "planerearstay.stl")
     # objpath = os.path.join(this_dir, "objects", "sandpart.stl")
     freegriptst = FreegripContactpairs(objpath)
-    print len(freegriptst.objtrimesh.faces)
+    print(len(freegriptst.objtrimesh.faces))
     # freegriptst.objtrimesh.show()
 
     base = pandactrl.World(camp=[0,700,0], lookatp=[0,0,0])

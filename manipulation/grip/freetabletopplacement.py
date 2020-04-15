@@ -4,7 +4,8 @@ import os
 
 import MySQLdb as mdb
 import numpy as np
-from manipulation.grip.robotiq85 import rtq85nm
+# from manipulation.grip.robotiq85 import rtq85nm
+from manipulation.grip.hrp5three import hrp5threenm
 from panda3d.bullet import BulletWorld
 from panda3d.bullet import BulletDebugNode
 from panda3d.core import *
@@ -53,6 +54,7 @@ class FreeTabletopPlacement(object):
 
         self.handpkg = handpkg
         self.handname = handpkg.getHandName()
+        print("HandName: " + str(self.handname))
         self.hand = handpkg.newHandNM(hndcolor=[0,1,0,.1])
         # self.rtq85hnd = rtq85nm.Rtq85NM(hndcolor=[1, 0, 0, .1])
 
@@ -79,7 +81,7 @@ class FreeTabletopPlacement(object):
         author: weiwei
         date: 20170110
         """
-
+        print("loadFreeAirGrip: self.handname = " + str(self.handname))
         freeairgripdata = self.gdb.loadFreeAirGrip(self.dbobjname, handname = self.handname)
         if freeairgripdata is None:
             raise ValueError("Plan the freeairgrip first!")
@@ -184,7 +186,7 @@ class FreeTabletopPlacement(object):
                 # add hand model to bulletworld
                 hndbullnode = cd.genCollisionMeshMultiNp(tmphnd.handnp)
                 result = self.bulletworldhp.contactTest(hndbullnode)
-                # print result.getNumContacts()
+                # print(result.getNumContacts())
                 if not result.getNumContacts():
                     self.tpsgriprotmats[-1].append(tpsgriprotmat)
                     cct0 = self.tpsmat4s[i].xformPoint(self.freegripcontacts[j][0])
@@ -230,7 +232,7 @@ class FreeTabletopPlacement(object):
             sql = sql[:-2] + ";"
             self.gdb.execute(sql)
         else:
-            print "Freetabletopplacement already exist!"
+            print("Freetabletopplacement already exist!")
 
         # save freetabletopgrip
         idhand = gdb.loadIdHand(self.handname)
@@ -246,7 +248,7 @@ class FreeTabletopPlacement(object):
                         freetabletopplacement.rotmat LIKE '%s' AND \
                         object.name LIKE '%s'" % (dc.mat4ToStr(self.tpsmat4s[i]), self.dbobjname)
                 result = self.gdb.execute(sql)[0]
-                print result
+                print(result)
                 if len(result) != 0:
                     idfreetabletopplacement = result[0]
                     # note self.tpsgriprotmats[i] might be empty (no cd-free grasps)
@@ -265,7 +267,7 @@ class FreeTabletopPlacement(object):
                         sql = sql[:-2] + ";"
                         self.gdb.execute(sql)
         else:
-            print "Freetabletopgrip already exist!"
+            print("Freetabletopgrip already exist!")
 
 
     def removebadfacetsshow(self, base, doverh=.1):
@@ -282,7 +284,7 @@ class FreeTabletopPlacement(object):
         """
 
         plotoffsetfp = 10
-        # print self.counter
+        # print(self.counter)
 
         if self.counter < len(self.ocfacets):
             i = self.counter
@@ -317,10 +319,10 @@ class FreeTabletopPlacement(object):
                 dist2p = apntpnt.distance(facetp.exterior)
                 dist2c = np.linalg.norm(np.array([hitpos[0],hitpos[1],hitpos[2]])-np.array([pFrom[0],pFrom[1],pFrom[2]]))
                 if dist2p/dist2c < doverh:
-                    print "not stable"
+                    print("not stable")
                     # return
                 else:
-                    print dist2p/dist2c
+                    print(dist2p/dist2c)
                     pol_ext = LinearRing(bdverts2d)
                     d = pol_ext.project(apntpnt)
                     p = pol_ext.interpolate(d)
@@ -380,7 +382,8 @@ class FreeTabletopPlacement(object):
                 hndrotmat = dc.strToMat4(resultrow[0])
                 hndjawwidth = float(resultrow[1])
                 # show grasps
-                tmprtq85 = rtq85nm.Rtq85NM(hndcolor=[0, 1, 0, .1])
+                # tmprtq85 = rtq85nm.Rtq85NM(hndcolor=[0, 1, 0, .1])
+                tmprtq85 = hrp5threenm.Hrp5ThreeNM(jawwidth=hndjawwidth, hndcolor = [0, 1, 0, .1])
                 tmprtq85.setMat(pandanpmat4 = hndrotmat)
                 tmprtq85.setJawwidth(hndjawwidth)
                 # tmprtq85.setJawwidth(80)
@@ -423,7 +426,7 @@ class FreeTabletopPlacement(object):
                     tmphnd.reparentTo(base.render)
 
     def ocfacetshow(self, base):
-        print self.objcom
+        print(self.objcom)
 
         npf = base.render.find("**/supportfacet")
         if npf:
@@ -431,8 +434,8 @@ class FreeTabletopPlacement(object):
 
         plotoffsetfp = 10
 
-        print self.counter
-        print len(self.ocfacets)
+        print(self.counter)
+        print(len(self.ocfacets))
         if self.counter < len(self.ocfacets):
             geom = pandageom.packpandageom(self.objtrimeshconv.vertices+
                                            np.tile(plotoffsetfp*self.ocfacetnormals[self.counter],
@@ -467,13 +470,17 @@ if __name__ == '__main__':
     # objpath = os.path.join(this_dir, "objects", "planefrontstay.stl")
     # objpath = os.path.join(this_dir, "objects", "planerearstay.stl")
     # objpath = os.path.join(this_dir, "objects", "planerearstay2.stl")
-    print objpath
+    print(objpath)
+
+    print("freetabletopplacement Step 1")
 
     from manipulation.grip.hrp5three import hrp5threenm
     handpkg = hrp5threenm
     # handpkg = rtq85nm
+    print("freetabletopplacement Step 2")
     gdb = db.GraspDB()
     tps = FreeTabletopPlacement(objpath, handpkg, gdb)
+    print("freetabletopplacement Step 3")
 
     # objpath0 = os.path.join(this_dir, "objects", "ttube.stl")
     # objpath1 = os.path.join(this_dir, "objects", "tool.stl")
@@ -489,7 +496,7 @@ if __name__ == '__main__':
     #     tps = FreeTabletopPlacement(objpath, gdb)
     #     tps.removebadfacets(base, doverh=.2)
     #     toc = time.clock()
-    #     print toc-tic
+    #     print(toc-tic)
     #     fo.write(os.path.basename(objpath)+' '+str(toc-tic)+'\n')
     # fo.close()
 
@@ -525,12 +532,17 @@ if __name__ == '__main__':
     #     world.doPhysics(globalClock.getDt())
     #     return task.cont
     #
+    print("freetabletopplacement Step 4")
     if tps.loadFreeTabletopPlacement():
         pass
     else:
+        print("freetabletopplacement Step 4a")
         tps.removebadfacets(base, doverh=.15)
+    print("freetabletopplacement Step 5")
     tps.gentpsgrip(base)
+    print("freetabletopplacement Step 6")
     tps.saveToDB()
+    print("freetabletopplacement Step 7")
     #
     # bullcldrnp = base.render.attachNewNode("bulletcollider")
     # debugNode = BulletDebugNode('Debug')
@@ -542,6 +554,7 @@ if __name__ == '__main__':
     #
     # taskMgr.add(updateworld, "updateworld", extraArgs=[tps.bulletworldhp], appendTask=True)
 
-    # tps.grpshow(base)
+    tps.grpshow(base)
     # tps.showOnePlacementAndAssociatedGrips(base)
+    print("freetabletopplacement Step 8")
     base.run()

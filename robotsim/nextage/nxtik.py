@@ -1,6 +1,6 @@
 import math
 import numpy as np
-import exceptions as ep
+# import exceptions as ep
 import utils.robotmath as rm
 
 def eubik(pos, armid="rgt"):
@@ -39,7 +39,7 @@ def jacobian(nxtrobot, armid="rgt"):
     """
 
     if armid!="rgt" and armid!="lft":
-        raise ep.ValueError
+        raise ValueError
 
     armlj = nxtrobot.rgtarm
     if armid == "lft":
@@ -82,7 +82,7 @@ def tcperror(nxtrobot, tgtpos, tgtrot, armid="rgt"):
     """
 
     if armid!="rgt" and armid!="lft":
-        raise ep.ValueError
+        raise ValueError
 
     armlj = nxtrobot.rgtarm
     if armid == "lft":
@@ -130,7 +130,7 @@ def numik(nxtrobot, tgtpos, tgtrot, armid="rgt"):
     """
 
     if armid!="rgt" and armid!="lft":
-        raise ep.ValueError
+        raise ValueError
 
     # armlj = nxtrobot.rgtarm
     # if armid == "lft":
@@ -149,13 +149,13 @@ def numik(nxtrobot, tgtpos, tgtrot, armid="rgt"):
             err = tcperror(nxtrobot, tgtpos, tgtrot, armid)
             dq = steplength * (np.linalg.lstsq(armjac, err))[0]
         else:
-            print "The Jacobian Matrix of the specified arm is at singularity"
+            print("The Jacobian Matrix of the specified arm is at singularity")
             break
-        # print np.linalg.norm(err)
+        # print(np.linalg.norm(err))
         errnorm = np.linalg.norm(err)
         if errnorm < 1:
-            # print 'goal reached', armjntsiter
-            # print "number of iteration ", i
+            # print('goal reached', armjntsiter)
+            # print("number of iteration ", i)
             armjntsreturn = nxtrobot.getarmjnts(armid)
             nxtrobot.movearmfk(armjntssave, armid)
             return armjntsreturn
@@ -164,8 +164,8 @@ def numik(nxtrobot, tgtpos, tgtrot, armid="rgt"):
             # judge local minima
             if abs(errnorm - errnormlast) < 1e-3:
                 nlocalencountered += 1
-                # print "local minima at iteration", i
-                # print "n local encountered", nlocalencountered
+                # print("local minima at iteration", i)
+                # print("n local encountered", nlocalencountered)
                 steplength = 3
                 steplengthinc = 7
                 if nlocalencountered > 2:
@@ -178,12 +178,12 @@ def numik(nxtrobot, tgtpos, tgtrot, armid="rgt"):
             bdragged, jntangles = nxtrobot.chkrngdrag(armjntsiter, armid)
             armjntsiter[:] = jntangles[:]
             nxtrobot.movearmfk(jntangles, armid)
-            # print jntangles
+            # print(jntangles)
             # import nxtplot
             # nxtplot.plotstick(base.render, nxtrobot)
         errnormlast = errnorm
-        # print errnorm
-    # print "out of max iteration"
+        # print(errnorm)
+    # print("out of max iteration")
     nxtrobot.movearmfk(armjntssave, armid)
     return None
 
@@ -216,9 +216,9 @@ def numikr(nxtrobot, tgtpos, tgtrot, armid="rgt"):
 
 if __name__=="__main__":
     pos = [300,300,0]
-    print eubik(pos)
+    print(eubik(pos))
 
     try:
-        print math.asin(145/np.linalg.norm(pos[0:1]))
+        print(math.asin(145/np.linalg.norm(pos[0:1])))
     except:
-        print "nontriangle"
+        print("nontriangle")

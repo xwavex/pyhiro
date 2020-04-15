@@ -157,7 +157,7 @@ class Rtq85():
             rotiknuckle=41-math.asin((jawwidth/2-5)/57.15)*180/math.pi
         else:
             rotiknuckle=41+math.asin((5-jawwidth/2)/57.15)*180/math.pi
-        # print rotiknuckle
+        # print(rotiknuckle)
 
         # right finger
         rtq85irknuckle = self.rtq85np.find("**/rtq85irknuckle")
@@ -319,15 +319,15 @@ if __name__=='__main__':
         # result = base.world.contactTestPair(bcollidernp.node(), lftcollidernp.node())
         # result1 = base.world.contactTestPair(bcollidernp.node(), ilkcollidernp.node())
         # result2 = base.world.contactTestPair(lftcollidernp.node(), ilkcollidernp.node())
-        # print result
-        # print result.getContacts()
-        # print result1
-        # print result1.getContacts()
-        # print result2
-        # print result2.getContacts()
+        # print(result)
+        # print(result.getContacts())
+        # print(result1)
+        # print(result1.getContacts())
+        # print(result2)
+        # print(result2.getContacts())
         # for contact in result.getContacts():
         #     cp = contact.getManifoldPoint()
-        #     print cp.getLocalPointA()
+        #     print(cp.getLocalPointA())
         return task.cont
 
     base = pandactrl.World()
@@ -390,12 +390,12 @@ if __name__=='__main__':
 
     base.taskMgr.add(updateworld, "updateworld", extraArgs=[base.world], appendTask=True)
     result = base.world.contactTestPair(bbullnode, ilkbullnode)
-    print result
-    print result.getContacts()
+    print(result)
+    print(result.getContacts())
     import pandaplotutils.pandageom as pandageom
     for contact in result.getContacts():
         cp = contact.getManifoldPoint()
-        print cp.getLocalPointA()
+        print(cp.getLocalPointA())
         pandageom.plotSphere(base.render, pos=cp.getLocalPointA(), radius=1, rgba=Vec4(1,0,0,1))
 
     debugNode = BulletDebugNode('Debug')

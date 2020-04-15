@@ -150,11 +150,11 @@ class FloatingPoses(object):
             # hand0 = self.handpkg.newHandNM(hndcolor=[1, 0, 0, .1])
             # hand1 = self.handpkg.newHandNM(hndcolor=[1, 0, 0, .1])
             pairidlist = list(itertools.combinations(range(len(self.freegripids)), 2))
-            print len(pairidlist)/5000+1
+            print(len(pairidlist)/5000+1)
             for i in range(100,len(pairidlist),len(pairidlist)/5000+1):
             # for i0, i1 in pairidlist:
                 i0, i1 = pairidlist[i]
-                print i, len(pairidlist)
+                print(i, len(pairidlist))
                 self.hand0.setMat(pandanpmat4 = self.freegriprotmats[i0])
                 self.hand0.setJawwidth(self.freegripjawwidth[i0])
                 self.hand1.setMat(pandanpmat4 = self.freegriprotmats[i1])
@@ -207,7 +207,7 @@ class FloatingPoses(object):
             # the gridsfloatingposes for the self.dbobjname is not saved
             sql = "INSERT INTO floatingposes(rotmat, idobject) VALUES "
             for i in range(len(self.gridsfloatingposemat4s)):
-                # print i, "/", len(self.gridsfloatingposemat4s)
+                # print(i, "/", len(self.gridsfloatingposemat4s))
                 sql += "('%s', (SELECT idobject FROM object WHERE name LIKE '%s')), " % \
                        (dc.mat4ToStr(self.gridsfloatingposemat4s[i]), self.dbobjname)
             sql = sql[:-2] + ";"
@@ -235,8 +235,8 @@ class FloatingPoses(object):
                             sql = "INSERT INTO floatinggrips(contactpoint0, contactpoint1, contactnormal0, contactnormal1, \
                                     rotmat, jawwidth, idfloatingposes, idfreeairgrip) VALUES "
                             for j in range(len(self.floatinggripmat4s[i])):
-                                # print "gripposes", i, "/", len(self.gridsfloatingposemat4s)
-                                # print  "grips", j, "/", len(self.floatinggripmat4s[i])
+                                # print("gripposes", i, "/", len(self.gridsfloatingposemat4s))
+                                # print( "grips", j, "/", len(self.floatinggripmat4s[i]))
                                 cct0 = self.floatinggripcontacts[i][j][0]
                                 cct1 = self.floatinggripcontacts[i][j][1]
                                 cctn0 = self.floatinggripnormals[i][j][0]
@@ -305,7 +305,7 @@ class FloatingPoses(object):
                     self.floatinggripjawwidth.append(floatinggripjawwidths)
                     self.floatinggripidfreeair.append(floatinggripidfreeairs)
                 else:
-                    print 'Plan floating grips first!'
+                    print('Plan floating grips first!')
                     assert(False)
         else:
             assert('No object found!')
@@ -398,10 +398,10 @@ class FloatingPoses(object):
         tic = time.clock()
         for fpid in range(len(self.gridsfloatingposemat4s)):
             toc = time.clock()
-            print toc-tic
+            print(toc-tic)
             if fpid != 0:
-                print "remaining time", (toc-tic)*len(self.gridsfloatingposemat4s)/fpid-(toc-tic)
-            print fpid, len(self.gridsfloatingposemat4s)
+                print("remaining time", (toc-tic)*len(self.gridsfloatingposemat4s)/fpid-(toc-tic))
+            print(fpid, len(self.gridsfloatingposemat4s))
             # gen correspondence between freeairgripid and index
             # indfgoffa means index of floatinggrips whose freeairgripid are xxx
             indfgoffa = {}
@@ -492,8 +492,8 @@ class FloatingPoses(object):
                 self.floatinggrippairsjawwidths.append(floatinggrippairsjawwidths)
                 self.floatinggrippairsidfreeairs.append(floatinggrippairsidfreeairs)
         # for i,pairs in enumerate(self.floatinggrippairsids):
-        #     print i
-        #     print pairs
+        #     print(i)
+        #     print(pairs)
 
     def updateDBwithIK(self, robot):
         """
@@ -514,10 +514,10 @@ class FloatingPoses(object):
         tic = time.clock()
         for fpid in range(len(self.gridsfloatingposemat4s)):
             toc = time.clock()
-            print toc-tic
+            print(toc-tic)
             if fpid != 0:
-                print "remaining time", (toc-tic)*len(self.gridsfloatingposemat4s)/fpid-(toc-tic)
-            print fpid, len(self.gridsfloatingposemat4s)
+                print("remaining time", (toc-tic)*len(self.gridsfloatingposemat4s)/fpid-(toc-tic))
+            print(fpid, len(self.gridsfloatingposemat4s))
             ### right hand
             armname = 'rgt'
             feasibility = []
@@ -659,12 +659,12 @@ class FloatingPoses(object):
                 hand0.setMat(pandanpmat4 = hndrotmat4)
                 hand0.setJawwidth(self.floatinggripjawwidth[fpid][i])
                 hand0.reparentTo(parentnp)
-                print self.handpairList
+                print(self.handpairList)
                 for handidpair in self.handpairList:
                     if handidpair[0] == self.floatinggripidfreeair[fpid][i]:
                         pairedilist = [i1 for i1 in range(len(self.floatinggripidfreeair[fpid]))
                                        if self.floatinggripidfreeair[fpid][i1]==handidpair[1]]
-                        print pairedilist
+                        print(pairedilist)
                         i1 = pairedilist[0]
                         # if self.floatinggripikfeas_lft[fpid][i1] == 'True':
                         hand1 = self.handpkg.newHandNM(hndcolor=[0, 1, 1, 1])
@@ -675,7 +675,7 @@ class FloatingPoses(object):
                     if handidpair[1] == self.floatinggripidfreeair[fpid][i]:
                         pairedilist = [i1 for i1 in range(len(self.floatinggripidfreeair[fpid]))
                                        if self.floatinggripidfreeair[fpid][i1]==handidpair[0]]
-                        print pairedilist
+                        print(pairedilist)
                         i1 = pairedilist[0]
                         # if self.floatinggripikfeas_lft[fpid][i1] == 'True':
                         hand1 = self.handpkg.newHandNM(hndcolor=[0, 1, 1, 1])
@@ -699,7 +699,7 @@ class FloatingPoses(object):
         objnp.setMat(self.gridsfloatingposemat4s[fpid])
         objnp.setColor(Vec4(.7,0.3,0,1))
         objnp.reparentTo(parentnp)
-        print self.floatinggrippairshndmat4s[fpid]
+        print(self.floatinggrippairshndmat4s[fpid])
         for i, hndrotmat4pair in enumerate(self.floatinggrippairshndmat4s[fpid]):
             # if i == 9:
             # show grasps

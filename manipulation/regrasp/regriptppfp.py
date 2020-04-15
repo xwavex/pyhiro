@@ -31,7 +31,7 @@ from database import dbaccess as db
 import networkx as nx
 import math
 import random
-import floatingposes
+from . import floatingposes
 
 # regriptppfp means regrip using tabletop placements and floating poses
 class RegripTppFp():
@@ -229,7 +229,7 @@ class RegripTppFp():
                                        angle = float(tpsrows[:,1][i]), tabletopposition = dc.strToV3(tpsrows[:,3][i]))
                     globalidsedges[str(ttgsidfreeair)].append(armname+str(ttgsid))
                     localidedges.append(armname+str(ttgsid))
-                # print list(itertools.combinations(ttgrows[:,0], 2))
+                # print(list(itertools.combinations(ttgrows[:,0], 2)))
                 for edge in list(itertools.combinations(localidedges, 2)):
                     self.regg.add_edge(*edge, weight=1, edgetype = 'transit')
             if len(globalidsedges) == 0:
@@ -282,11 +282,14 @@ class RegripTppFp():
 
         ### start rgt
         # the node id of a globalgripid in startnode
+        print("RegripTppFp (__addstartgoal): 1")
         nodeidofglobalidinstartrgt= {}
         # the startnodeids is also for quick access
         self.startrgtnodeids = []
         self.ttnodepath.reparentTo(base.render)
+        print("RegripTppFp (__addstartgoal): 2")
         for j, rotmat in enumerate(self.freegriprotmats):
+            print("RegripTppFp (__addstartgoal): 3" + str(j) + "/" + str(len(self.freegriprotmats)))
             ttgsrotmat = rotmat * startrotmat4
             # for collision detection, we move the object back to x=0,y=0
             ttgsrotmatx0y0 = Mat4(startrotmat4)
@@ -303,10 +306,14 @@ class RegripTppFp():
             # tmprtq85.setJawwidth(self.freegripjawwidth[j])
             tmphnd.setJawwidth(80)
             tmphnd.setMat(pandanpmat4 = ttgsrotmatx0y0)
+            print("RegripTppFp (__addstartgoal): 3a")
             # add hand model to bulletworld
             hndbullnode = cd.genCollisionMeshMultiNp(tmphnd.handnp)
+            print("RegripTppFp (__addstartgoal): 3b")
             result = self.bulletworld.contactTest(hndbullnode)
+            print("RegripTppFp (__addstartgoal): 3c")
             if not result.getNumContacts():
+                print("RegripTppFp (__addstartgoal): 3d")
                 ttgscct0=startrotmat4.xformPoint(self.freegripcontacts[j][0])
                 ttgscct1=startrotmat4.xformPoint(self.freegripcontacts[j][1])
                 ttgsfgrcenter = (ttgscct0+ttgscct1)/2
@@ -329,14 +336,17 @@ class RegripTppFp():
                 ikcx = self.robot.numikr(ttgsfgrcenternp_handx, ttgsrotmat3np, armid = 'rgt')
                 ikca = self.robot.numikr(ttgsfgrcenternp_worlda, ttgsrotmat3np, armid = 'rgt')
                 ikcaz = self.robot.numikr(ttgsfgrcenternp_worldaworldz, ttgsrotmat3np, armid = 'rgt')
+                print("RegripTppFp (__addstartgoal): 3e")
                 if (ikc is not None) and (ikcx is not None) and (ikca is not None) and (ikcaz is not None):
                     # note the tabletopposition here is not the contact for the intermediate states
                     # it is the zero pos
+                    print("RegripTppFp (__addstartgoal): 3f")
                     tabletopposition = startrotmat4.getRow3(3)
                     startrotmat4worlda = Mat4(startrotmat4)
                     startrotmat4worlda.setRow(3, startrotmat4.getRow3(3)+self.worlda*self.retworlda)
                     startrotmat4worldaworldz = Mat4(startrotmat4worlda)
                     startrotmat4worldaworldz.setRow(3, startrotmat4worlda.getRow3(3)+self.worldz*self.retworldz)
+                    print("RegripTppFp (__addstartgoal): 3g")
                     self.regg.add_node('startrgt'+str(j), fgrcenter=ttgsfgrcenternp,
                                        fgrcenterhandx = ttgsfgrcenternp_handx,
                                        fgrcenterhandxworldz = 'na',
@@ -350,14 +360,18 @@ class RegripTppFp():
                                        tabletopplacementrotmatworlda = startrotmat4worlda,
                                        tabletopplacementrotmatworldaworldz = startrotmat4worldaworldz,
                                        angle = 'na', tabletopposition = tabletopposition)
+                    print("RegripTppFp (__addstartgoal): 3h")
                     nodeidofglobalidinstartrgt[ttgsidfreeair]='startrgt'+str(j)
+                    print("RegripTppFp (__addstartgoal): 3i")
                     self.startrgtnodeids.append('startrgt'+str(j))
+                    print("RegripTppFp (__addstartgoal): 3j")
                     # tmprtq85.reparentTo(base.render)
             tmphnd.setMat(pandanpmat4 = initmat)
             tmphnd.setJawwidth(initjawwidth)
+            print("RegripTppFp (__addstartgoal): 3k")
 
         if len(self.startrgtnodeids) == 0:
-            print "No available starting grip for right hand!"
+            print("No available starting grip for right hand!")
 
         ### start lft
         # the node id of a globalgripid in startnode
@@ -365,7 +379,9 @@ class RegripTppFp():
         # the startnodeids is also for quick access
         self.startlftnodeids = []
         self.ttnodepath.reparentTo(base.render)
+        print("RegripTppFp (__addstartgoal): 3l")
         for j, rotmat in enumerate(self.freegriprotmats):
+            print("RegripTppFp (__addstartgoal): 4 " + str(j) + "/" + str(len(self.freegriprotmats)))
             ttgsrotmat = rotmat * startrotmat4
             # for collision detection, we move the object back to x=0,y=0
             ttgsrotmatx0y0 = Mat4(startrotmat4)
@@ -382,10 +398,14 @@ class RegripTppFp():
             # tmprtq85.setJawwidth(self.freegripjawwidth[j])
             tmphnd.setJawwidth(80)
             tmphnd.setMat(pandanpmat4 = ttgsrotmatx0y0)
+            print("RegripTppFp (__addstartgoal): 4a")
             # add hand model to bulletworld
             hndbullnode = cd.genCollisionMeshMultiNp(tmphnd.handnp)
+            print("RegripTppFp (__addstartgoal): 4b")
             result = self.bulletworld.contactTest(hndbullnode)
+            print("RegripTppFp (__addstartgoal): 4c")
             if not result.getNumContacts():
+                print("RegripTppFp (__addstartgoal): 4d")
                 ttgscct0=startrotmat4.xformPoint(self.freegripcontacts[j][0])
                 ttgscct1=startrotmat4.xformPoint(self.freegripcontacts[j][1])
                 ttgsfgrcenter = (ttgscct0+ttgscct1)/2
@@ -408,6 +428,7 @@ class RegripTppFp():
                 ikcx = self.robot.numikr(ttgsfgrcenternp_handx, ttgsrotmat3np, armid = 'lft')
                 ikca = self.robot.numikr(ttgsfgrcenternp_worlda, ttgsrotmat3np, armid = 'lft')
                 ikcaz = self.robot.numikr(ttgsfgrcenternp_worldaworldz, ttgsrotmat3np, armid = 'lft')
+                print("RegripTppFp (__addstartgoal): 4e")
                 if (ikc is not None) and (ikcx is not None) and (ikca is not None) and (ikcaz is not None):
                     # note the tabletopposition here is not the contact for the intermediate states
                     # it is the zero pos
@@ -436,7 +457,7 @@ class RegripTppFp():
             tmphnd.setJawwidth(initjawwidth)
 
         if len(self.startlftnodeids) == 0:
-            print "No available starting grip for left hand!"
+            print("No available starting grip for left hand!")
 
         if len(self.startrgtnodeids) == 0 and len(self.startlftnodeids) == 0:
             raise ValueError("No available starting grip!")
@@ -464,6 +485,8 @@ class RegripTppFp():
                 if globalgripid in nodeidofglobalidinstartlft.keys():
                     startnodeid = nodeidofglobalidinstartlft[globalgripid]
                     self.regg.add_edge(startnodeid, reggnode, weight=1, edgetype = 'startlfttransfer')
+
+        print("RegripTppFp (__addstartgoal): 5")
 
 
         ### goal rgt
@@ -538,7 +561,9 @@ class RegripTppFp():
             tmphnd.setJawwidth(initjawwidth)
 
         if len(self.goalrgtnodeids) == 0:
-            print "No available goal grip for right hand!"
+            print("No available goal grip for right hand!")
+
+        print("RegripTppFp (__addstartgoal): 6")
 
         ### goal lft
         # the node id of a globalgripid in goalnode, for quick setting up edges
@@ -612,7 +637,9 @@ class RegripTppFp():
             tmphnd.setJawwidth(initjawwidth)
 
         if len(self.goallftnodeids) == 0:
-            print "No available goal grip for left hand!"
+            print("No available goal grip for left hand!")
+
+        print("RegripTppFp (__addstartgoal): 7")
 
         # add edge right
         # add goal transit edges
@@ -642,8 +669,8 @@ class RegripTppFp():
         for startnodeid in self.startrgtnodeids:
             for goalnodeid in self.goalrgtnodeids:
                 # startnodeggid = start node global grip id
-                startnodeggid = self.regg.node[startnodeid]['globalgripid']
-                goalnodeggid = self.regg.node[goalnodeid]['globalgripid']
+                startnodeggid = self.regg.nodes[startnodeid]['globalgripid']
+                goalnodeggid = self.regg.nodes[goalnodeid]['globalgripid']
                 if startnodeggid == goalnodeggid:
                     self.regg.add_edge(startnodeid, goalnodeid, weight=1, edgetype = 'startgoalrgttransfer')
 
@@ -651,20 +678,25 @@ class RegripTppFp():
         for startnodeid in self.startlftnodeids:
             for goalnodeid in self.goallftnodeids:
                 # startnodeggid = start node global grip id
-                startnodeggid = self.regg.node[startnodeid]['globalgripid']
-                goalnodeggid = self.regg.node[goalnodeid]['globalgripid']
+                startnodeggid = self.regg.nodes[startnodeid]['globalgripid']
+                goalnodeggid = self.regg.nodes[goalnodeid]['globalgripid']
                 if startnodeggid == goalnodeggid:
                     self.regg.add_edge(startnodeid, goalnodeid, weight=1, edgetype = 'startgoallfttransfer')
 
+        print("RegripTppFp (__addstartgoal): 8")
+
     def findshortestpath(self, startrotmat4, goalrotmat4, base, bagain = False):
+        print("RegripTppFp: 1")
         if bagain == False:
             self.__addstartgoal(startrotmat4, goalrotmat4, base)
-
+        print("RegripTppFp: 2")
         # startrgt goalrgt
         if len(self.startrgtnodeids) > 0 and len(self.goalrgtnodeids) > 0:
             startgrip = self.startrgtnodeids[0]
             goalgrip = self.goalrgtnodeids[0]
+            print("RegripTppFp: 2")
             self.shortestpaths = nx.all_shortest_paths(self.regg, source = startgrip, target = goalgrip)
+            print("RegripTppFp: 3")
             self.directshortestpaths_startrgtgoalrgt = []
             try:
                 for path in self.shortestpaths:
@@ -678,14 +710,18 @@ class RegripTppFp():
                         if i > 0 and pathnode.startswith('goal'):
                             self.directshortestpaths_startrgtgoalrgt[-1]=self.directshortestpaths_startrgtgoalrgt[-1][:i+1]
                             break
+                print("RegripTppFp: 4")
             except:
                 assert('No startrgt goalrgt path')
 
         # startrgt goallft
+        print("RegripTppFp: 5")
         if len(self.startrgtnodeids) > 0 and len(self.goallftnodeids) > 0:
             startgrip = self.startrgtnodeids[0]
             goalgrip = self.goallftnodeids[0]
+            print("RegripTppFp: 6")
             self.shortestpaths = nx.all_shortest_paths(self.regg, source = startgrip, target = goalgrip)
+            print("RegripTppFp: 7")
             self.directshortestpaths_startrgtgoallft = []
             try:
                 for path in self.shortestpaths:
@@ -699,14 +735,18 @@ class RegripTppFp():
                         if i > 0 and pathnode.startswith('goal'):
                             self.directshortestpaths_startrgtgoallft[-1]=self.directshortestpaths_startrgtgoallft[-1][:i+1]
                             break
+                print("RegripTppFp: 8")
             except:
                 assert('No startrgt goallft path')
 
         # startlft goalrgt
+        print("RegripTppFp: 9")
         if len(self.startlftnodeids) > 0 and len(self.goalrgtnodeids) > 0:
             startgrip = self.startlftnodeids[0]
             goalgrip = self.goalrgtnodeids[0]
+            print("RegripTppFp: 10")
             self.shortestpaths = nx.all_shortest_paths(self.regg, source = startgrip, target = goalgrip)
+            print("RegripTppFp: 11")
             self.directshortestpaths_startlftgoalrgt = []
             try:
                 for path in self.shortestpaths:
@@ -720,14 +760,18 @@ class RegripTppFp():
                         if i > 0 and pathnode.startswith('goal'):
                             self.directshortestpaths_startlftgoalrgt[-1]=self.directshortestpaths_startlftgoalrgt[-1][:i+1]
                             break
+                print("RegripTppFp: 12")
             except:
                 assert('No startlft goalrgt path')
 
         # startlft goallft
+        print("RegripTppFp: 13")
         if len(self.startlftnodeids) > 0 and len(self.goallftnodeids) > 0:
             startgrip = self.startlftnodeids[0]
             goalgrip = self.goallftnodeids[0]
+            print("RegripTppFp: 14")
             self.shortestpaths = nx.all_shortest_paths(self.regg, source = startgrip, target = goalgrip)
+            print("RegripTppFp: 15")
             self.directshortestpaths_startlftgoallft = []
             try:
                 for path in self.shortestpaths:
@@ -741,8 +785,10 @@ class RegripTppFp():
                         if i > 0 and pathnode.startswith('goal'):
                             self.directshortestpaths_startlftgoallft[-1]=self.directshortestpaths_startlftgoallft[-1][:i+1]
                             break
+                print("RegripTppFp: 16")
             except:
                 assert('No startlft goallft path')
+        print("RegripTppFp: 17")
 
     def removeBadNodes(self, nodelist):
         """
@@ -825,8 +871,8 @@ class RegripTppFp():
             xyzpos1 = [0,0,0]
             if (reggedgedata['edgetype'] is 'transit') or (reggedgedata['edgetype'] is 'transfer'):
                 if nid0.startswith('ho'):
-                    fpind0 = self.regg.node[nid0]['floatingposeind']
-                    fpgpind0 = self.regg.node[nid0]['floatingposegrippairind']
+                    fpind0 = self.regg.nodes[nid0]['floatingposeind']
+                    fpgpind0 = self.regg.nodes[nid0]['floatingposegrippairind']
                     nfpgp = len(self.floatingposes.floatinggrippairshndmat4s[fpind0])
                     xpos = x[fpind0 % len(x)]
                     ypos = y[fpind0/len(x)]
@@ -837,10 +883,10 @@ class RegripTppFp():
                     if nid0.startswith('holft'):
                         xyzpos0[1] = xyzpos0[1]+100
                 else:
-                    fttpid0 = self.regg.node[nid0]['freetabletopplacementid']
-                    anglevalue0 = self.regg.node[nid0]['angle']
-                    ggid0 = self.regg.node[nid0]['globalgripid']
-                    tabletopposition0 = self.regg.node[nid0]['tabletopposition']
+                    fttpid0 = self.regg.nodes[nid0]['freetabletopplacementid']
+                    anglevalue0 = self.regg.nodes[nid0]['angle']
+                    ggid0 = self.regg.nodes[nid0]['globalgripid']
+                    tabletopposition0 = self.regg.nodes[nid0]['tabletopposition']
                     xyzpos0 = map(add, self.xyzglobalgrippos[fttpid0][anglevalue0][ggid0],
                                   [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]])
                     if nid0.startswith('rgt'):
@@ -848,8 +894,8 @@ class RegripTppFp():
                     if nid0.startswith('lft'):
                         xyzpos0[1] = xyzpos0[1]+800
                 if nid1.startswith('ho'):
-                    fpind1 = self.regg.node[nid1]['floatingposeind']
-                    fpgpind1 = self.regg.node[nid1]['floatingposegrippairind']
+                    fpind1 = self.regg.nodes[nid1]['floatingposeind']
+                    fpgpind1 = self.regg.nodes[nid1]['floatingposegrippairind']
                     nfpgp = len(self.floatingposes.floatinggrippairshndmat4s[fpind1])
                     xpos = x[fpind1 % len(x)]
                     ypos = y[fpind1/len(x)]
@@ -860,10 +906,10 @@ class RegripTppFp():
                     if nid1.startswith('holft'):
                         xyzpos1[1] = xyzpos1[1]+100
                 else:
-                    fttpid1 = self.regg.node[nid1]['freetabletopplacementid']
-                    anglevalue1 = self.regg.node[nid1]['angle']
-                    ggid1 = self.regg.node[nid1]['globalgripid']
-                    tabletopposition1 = self.regg.node[nid1]['tabletopposition']
+                    fttpid1 = self.regg.nodes[nid1]['freetabletopplacementid']
+                    anglevalue1 = self.regg.nodes[nid1]['angle']
+                    ggid1 = self.regg.nodes[nid1]['globalgripid']
+                    tabletopposition1 = self.regg.nodes[nid1]['tabletopposition']
                     xyzpos1 = map(add, self.xyzglobalgrippos[fttpid1][anglevalue1][ggid1],
                                   [tabletopposition1[0], tabletopposition1[1], tabletopposition1[2]])
                     if nid1.startswith('rgt'):
@@ -887,8 +933,8 @@ class RegripTppFp():
                     else:
                         transferedges.append([xyzpos0[:2], xyzpos1[:2]])
             elif (reggedgedata['edgetype'] is 'handovertransit'):
-                fpind0 = self.regg.node[nid0]['floatingposeind']
-                fpgpind0 = self.regg.node[nid0]['floatingposegrippairind']
+                fpind0 = self.regg.nodes[nid0]['floatingposeind']
+                fpgpind0 = self.regg.nodes[nid0]['floatingposegrippairind']
                 nfpgp = len(self.floatingposes.floatinggrippairshndmat4s[fpind0])
                 xpos = x[fpind0 % len(x)]
                 ypos = y[fpind0/len(x)]
@@ -898,8 +944,8 @@ class RegripTppFp():
                     xyzpos0[1] = xyzpos0[1]-100
                 if nid0.startswith('holft'):
                     xyzpos0[1] = xyzpos0[1]+100
-                fpind1 = self.regg.node[nid1]['floatingposeind']
-                fpgpind1 = self.regg.node[nid1]['floatingposegrippairind']
+                fpind1 = self.regg.nodes[nid1]['floatingposeind']
+                fpgpind1 = self.regg.nodes[nid1]['floatingposegrippairind']
                 nfpgp = len(self.floatingposes.floatinggrippairshndmat4s[fpind1])
                 xpos = x[fpind1 % len(x)]
                 ypos = y[fpind1/len(x)]
@@ -914,10 +960,10 @@ class RegripTppFp():
                 xyzpos1[0] = xyzpos1[0]+600
                 hotransitedges.append([xyzpos0[:2], xyzpos1[:2]])
             elif reggedgedata['edgetype'].endswith('transit'):
-                gid0 = self.regg.node[nid0]['globalgripid']
-                gid1 = self.regg.node[nid1]['globalgripid']
-                tabletopposition0 = self.regg.node[nid0]['tabletopposition']
-                tabletopposition1 = self.regg.node[nid1]['tabletopposition']
+                gid0 = self.regg.nodes[nid0]['globalgripid']
+                gid1 = self.regg.nodes[nid1]['globalgripid']
+                tabletopposition0 = self.regg.nodes[nid0]['tabletopposition']
+                tabletopposition1 = self.regg.nodes[nid1]['tabletopposition']
                 xyzpos0 = map(add, self.xyzglobalgrippos_startgoal[gid0],
                               [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]])
                 xyzpos1 = map(add, self.xyzglobalgrippos_startgoal[gid1],
@@ -932,8 +978,8 @@ class RegripTppFp():
                     goallfttransitedges.append([xyzpos0[:2], xyzpos1[:2]])
             elif reggedgedata['edgetype'].endswith('transfer'):
                 if nid0.startswith('ho'):
-                    fpind0 = self.regg.node[nid0]['floatingposeind']
-                    fpgpind0 = self.regg.node[nid0]['floatingposegrippairind']
+                    fpind0 = self.regg.nodes[nid0]['floatingposeind']
+                    fpgpind0 = self.regg.nodes[nid0]['floatingposegrippairind']
                     nfpgp = len(self.floatingposes.floatinggrippairshndmat4s[fpind0])
                     xpos = x[fpind0 % len(x)]
                     ypos = y[fpind0/len(x)]
@@ -945,10 +991,10 @@ class RegripTppFp():
                         xyzpos0[1] = xyzpos0[1]+100
                     xyzpos0[0] = xyzpos0[0]+600
                 elif nid0.startswith('rgt') or nid0.startswith('lft'):
-                    fttpid0 = self.regg.node[nid0]['freetabletopplacementid']
-                    anglevalue0 = self.regg.node[nid0]['angle']
-                    ggid0 = self.regg.node[nid0]['globalgripid']
-                    tabletopposition0 = self.regg.node[nid0]['tabletopposition']
+                    fttpid0 = self.regg.nodes[nid0]['freetabletopplacementid']
+                    anglevalue0 = self.regg.nodes[nid0]['angle']
+                    ggid0 = self.regg.nodes[nid0]['globalgripid']
+                    tabletopposition0 = self.regg.nodes[nid0]['tabletopposition']
                     xyzpos0 = map(add, self.xyzglobalgrippos[fttpid0][anglevalue0][ggid0],
                                   [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]])
                     if nid0.startswith('rgt'):
@@ -957,13 +1003,13 @@ class RegripTppFp():
                         xyzpos0[1] = xyzpos0[1]+800
                     xyzpos0[0] = xyzpos0[0]+600
                 else:
-                    gid0 = self.regg.node[nid0]['globalgripid']
-                    tabletopposition0 = self.regg.node[nid0]['tabletopposition']
+                    gid0 = self.regg.nodes[nid0]['globalgripid']
+                    tabletopposition0 = self.regg.nodes[nid0]['tabletopposition']
                     xyzpos0 = map(add, self.xyzglobalgrippos_startgoal[gid0],
                                   [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]])
                 if nid1.startswith('ho'):
-                    fpind1 = self.regg.node[nid1]['floatingposeind']
-                    fpgpind1 = self.regg.node[nid1]['floatingposegrippairind']
+                    fpind1 = self.regg.nodes[nid1]['floatingposeind']
+                    fpgpind1 = self.regg.nodes[nid1]['floatingposegrippairind']
                     nfpgp = len(self.floatingposes.floatinggrippairshndmat4s[fpind1])
                     xpos = x[fpind1 % len(x)]
                     ypos = y[fpind1/len(x)]
@@ -975,10 +1021,10 @@ class RegripTppFp():
                         xyzpos1[1] = xyzpos1[1]+100
                     xyzpos1[0] = xyzpos1[0]+600
                 elif nid1.startswith('lft') or nid1.startswith('rgt'):
-                    fttpid1 = self.regg.node[nid1]['freetabletopplacementid']
-                    anglevalue1 = self.regg.node[nid1]['angle']
-                    ggid1 = self.regg.node[nid1]['globalgripid']
-                    tabletopposition1 = self.regg.node[nid1]['tabletopposition']
+                    fttpid1 = self.regg.nodes[nid1]['freetabletopplacementid']
+                    anglevalue1 = self.regg.nodes[nid1]['angle']
+                    ggid1 = self.regg.nodes[nid1]['globalgripid']
+                    tabletopposition1 = self.regg.nodes[nid1]['tabletopposition']
                     xyzpos1 = map(add, self.xyzglobalgrippos[fttpid1][anglevalue1][ggid1],
                                   [tabletopposition1[0], tabletopposition1[1], tabletopposition1[2]])
                     if nid1.startswith('rgt'):
@@ -987,8 +1033,8 @@ class RegripTppFp():
                         xyzpos1[1] = xyzpos1[1]+800
                     xyzpos1[0] = xyzpos1[0]+600
                 else:
-                    ggid1 = self.regg.node[nid1]['globalgripid']
-                    tabletopposition1 = self.regg.node[nid1]['tabletopposition']
+                    ggid1 = self.regg.nodes[nid1]['globalgripid']
+                    tabletopposition1 = self.regg.nodes[nid1]['tabletopposition']
                     xyzpos1 = map(add, self.xyzglobalgrippos_startgoal[ggid1],
                                   [tabletopposition1[0], tabletopposition1[1], tabletopposition1[2]])
                 if reggedgedata['edgetype'].startswith('startgoalrgt'):
@@ -1137,14 +1183,14 @@ class RegripTppFp():
         transitedges = []
         transferedges = []
         for nid0, nid1, reggedgedata in self.regg.edges(data=True):
-            fttpid0 = self.regg.node[nid0]['freetabletopplacementid']
-            anglevalue0 = self.regg.node[nid0]['angle']
-            gid0 = self.regg.node[nid0]['globalgripid']
-            fttpid1 = self.regg.node[nid1]['freetabletopplacementid']
-            angelvalue1 = self.regg.node[nid1]['angle']
-            gid1 = self.regg.node[nid1]['globalgripid']
-            tabletopposition0 = self.regg.node[nid0]['tabletopposition']
-            tabletopposition1 = self.regg.node[nid1]['tabletopposition']
+            fttpid0 = self.regg.nodes[nid0]['freetabletopplacementid']
+            anglevalue0 = self.regg.nodes[nid0]['angle']
+            gid0 = self.regg.nodes[nid0]['globalgripid']
+            fttpid1 = self.regg.nodes[nid1]['freetabletopplacementid']
+            angelvalue1 = self.regg.nodes[nid1]['angle']
+            gid1 = self.regg.nodes[nid1]['globalgripid']
+            tabletopposition0 = self.regg.nodes[nid0]['tabletopposition']
+            tabletopposition1 = self.regg.nodes[nid1]['tabletopposition']
             xyzpos0 = map(add, xyzglobalgrippos[fttpid0][anglevalue0][str(gid0)],
                           [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]])
             xyzpos1 = map(add, xyzglobalgrippos[fttpid1][angelvalue1][str(gid1)],

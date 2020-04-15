@@ -16,7 +16,7 @@ from panda3d.core import *
 
 from utils import designpattern
 
-import rtq85
+from . import rtq85
 
 class Rtq85NM():
     '''
@@ -45,9 +45,11 @@ class Rtq85NM():
         author: weiwei
         date: 20160627
         '''
+        print("Rtq85NM: 1")
         self.rtq85np = NodePath("rtq85hnd")
-        self.handnp = self.rtq85np
+        # self.handnp = self.rtq85np
         self.jawwidth = jawwidth
+        print("Rtq85NM: 4")
 
         this_dir, this_filename = os.path.split(__file__)
         rtq85basepath = Filename.fromOsSpecific(os.path.join(this_dir, "rtq85egg/nomat", "robotiq_85_base_link_nm.egg"))
@@ -55,6 +57,8 @@ class Rtq85NM():
         rtq85fingertippath = Filename.fromOsSpecific(os.path.join(this_dir, "rtq85egg/nomat", "robotiq_85_finger_tip_link_nm.egg"))
         rtq85innerknucklepath = Filename.fromOsSpecific(os.path.join(this_dir, "rtq85egg/nomat", "robotiq_85_inner_knuckle_link_nm.egg"))
         rtq85knucklepath = Filename.fromOsSpecific(os.path.join(this_dir, "rtq85egg/nomat", "robotiq_85_knuckle_link_nm.egg"))
+
+        print("Rtq85NM: 5")
 
         rtq85base = NodePath("rtq85base")
         rtq85lknuckle = NodePath("rtq85lknuckle")
@@ -190,6 +194,10 @@ class Rtq85NM():
     @property
     def handnp(self):
         return self.rtq85np
+
+    # @handnp.setter
+    # def handnp(self, handnp):
+    #     self.handnp = handnp
 
     def setJawwidth(self, jawwidth):
         '''
@@ -526,12 +534,12 @@ if __name__=='__main__':
 
     base.taskMgr.add(updateworld, "updateworld", extraArgs=[base.world], appendTask=True)
     result = base.world.contactTestPair(ilkbullnode, lftbullnode)
-    print result
-    print result.getContacts()
+    print(result)
+    print(result.getContacts())
     import pandaplotutils.pandageom as pandageom
     for contact in result.getContacts():
         cp = contact.getManifoldPoint()
-        print cp.getLocalPointA()
+        print(cp.getLocalPointA())
         pandageom.plotSphere(base, pos=cp.getLocalPointA(), radius=10, rgba=Vec4(1,0,0,1))
 
     pandageom.plotAxisSelf(base.render, spos = Vec3(0,0,0))

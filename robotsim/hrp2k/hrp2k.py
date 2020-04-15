@@ -1,9 +1,9 @@
 import numpy as np
-import exceptions as ep
+# import exceptions as ep
 import utils.robotmath as rm
 import pandaplotutils.pandactrl as pandactrl
 import pandaplotutils.pandageom as pg
-import hrp2kik
+from . import hrp2kik
 
 class Hrp2KRobot():
     def __init__(self):
@@ -428,7 +428,7 @@ class Hrp2KRobot():
         """
 
         if armid != "rgt" and armid != "lft":
-            raise ep.ValueError
+            raise ValueError
 
         armlj = self.rgtarm
         if armid == "lft":
@@ -453,7 +453,7 @@ class Hrp2KRobot():
         """
 
         if armid!="rgt" and armid!="lft":
-            raise ep.ValueError
+            raise ValueError
 
         armlj = self.rgtarm
         if armid == "lft":
@@ -518,7 +518,7 @@ class Hrp2KRobot():
         """
 
         if armid!="rgt" and armid!="lft":
-            raise ep.ValueError
+            raise ValueError
 
         armlj = self.rgtarm
         if armid == "lft":
@@ -558,7 +558,7 @@ class Hrp2KRobot():
         """
 
         if armid!="rgt" and armid!="lft":
-            raise ep.ValueError
+            raise ValueError
 
         armlj = self.rgtarm
         if armid == "lft":

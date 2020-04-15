@@ -1,6 +1,6 @@
 import math
 import numpy as np
-import exceptions as ep
+# import exceptions as ep
 import utils.robotmath as rm
 
 def eubik(pos, armid="rgt"):
@@ -38,7 +38,7 @@ def jacobian(hrp5nrobot, armid="rgt"):
     """
 
     if armid!="rgt" and armid!="lft":
-        raise ep.ValueError
+        raise ValueError
 
     armlj = hrp5nrobot.rgtarm
     if armid == "lft":
@@ -84,7 +84,7 @@ def tcperror(hrp5nrobot, tgtpos, tgtrot, armid="rgt"):
     """
 
     if armid!="rgt" and armid!="lft":
-        raise ep.ValueError
+        raise ValueError
 
     armlj = hrp5nrobot.rgtarm
     if armid == "lft":
@@ -128,7 +128,7 @@ def numik(hrp5nrobot, tgtpos, tgtrot, armid="rgt"):
     """
 
     if armid!="rgt" and armid!="lft":
-        raise ep.ValueError
+        raise ValueError
 
     # stablizer
     steplength = 5
@@ -143,16 +143,16 @@ def numik(hrp5nrobot, tgtpos, tgtrot, armid="rgt"):
             err = tcperror(hrp5nrobot, tgtpos, tgtrot, armid)
             dq = steplength * (np.linalg.lstsq(armjac, err))[0]
         else:
-            print "The Jacobian Matrix of the specified arm is at singularity"
+            print("The Jacobian Matrix of the specified arm is at singularity")
             # hrp5nrobot.movearmfk(armjntssave, armid)
             # return None
             break
-        print np.linalg.norm(err)
+        print(np.linalg.norm(err))
         # if np.linalg.norm(err)<1e-4:
         errnorm = np.linalg.norm(err)
         if errnorm < 1:
-            print 'goal reached', armjntsiter
-            print "number of iteration ", i
+            print('goal reached', armjntsiter)
+            print("number of iteration ", i)
             # if hrp5nrobot.chkrng(armjntsiter, armid):
             armjntsreturn = hrp5nrobot.getarmjnts(armid)
             hrp5nrobot.movearmfk(armjntssave, armid)
@@ -163,7 +163,7 @@ def numik(hrp5nrobot, tgtpos, tgtrot, armid="rgt"):
             #     # # hrp5nplot.plotstick(base.render, hrp5nrobot)
             #     # hrp5nmnp = hrp5nplot.genmnp(hrp5nrobot, handpkg)
             #     # hrp5nmnp.reparentTo(base.render)
-            #     # print "out of range"
+            #     # print("out of range")
             #     # hrp5nrobot.movearmfk(armjntssave, armid)
             #     # return None
             #     break
@@ -172,8 +172,8 @@ def numik(hrp5nrobot, tgtpos, tgtrot, armid="rgt"):
             # judge local minima
             if abs(errnorm - errnormlast) < 1e-3:
                 nlocalencountered += 1
-                print "local minima at iteration", i
-                print "n local encountered", nlocalencountered
+                print("local minima at iteration", i)
+                print("n local encountered", nlocalencountered)
                 steplength = 3
                 steplengthinc = 7
                 if nlocalencountered > 2:
@@ -183,14 +183,14 @@ def numik(hrp5nrobot, tgtpos, tgtrot, armid="rgt"):
                     steplength = steplength + steplengthinc
             armjntsiter += dq
             armjntsiter = rm.cvtRngPM180(armjntsiter)
-            # print armjntsiter
+            # print(armjntsiter)
             # for i in range(armjntsiter.shape[0]):
             #     armjntsiter[i] = armjntsiter[i]%360
-            # print armjntsiter
+            # print(armjntsiter)
             # the robot may encounter overrange errors in the first few iterations
             # use i<50 to avoid these errors
             # if hrp5nrobot.chkrng(armjntsiter, armid) or i < 30:
-            #     # print armjntsiter
+            #     # print(armjntsiter)
             #     hrp5nrobot.movearmfk(armjntsiter, armid)
             #     # import hrp5plot
             #     # hrp5plot.plotstick(base.render, hrp5robot)
@@ -210,12 +210,12 @@ def numik(hrp5nrobot, tgtpos, tgtrot, armid="rgt"):
             #     return None
             bdragged, jntangles = hrp5nrobot.chkrngdrag(armjntsiter, armid)
             armjntsiter[:] = jntangles[:]
-            print jntangles
+            print(jntangles)
             hrp5nrobot.movearmfk(jntangles, armid)
-            import hrp5nplot
+            from . import hrp5nplot
             hrp5nplot.plotstick(base.render, hrp5nrobot)
         errnormlast = errnorm
-        print errnorm
+        print(errnorm)
     import manipulation.grip.hrp5three.hrp5three as handpkg
     hrp5nmnp = hrp5nplot.genmnp(hrp5nrobot, handpkg)
     hrp5nmnp.reparentTo(base.render)
@@ -249,9 +249,9 @@ def numikr(hrp5nrobot, tgtpos, tgtrot, armid="rgt"):
 
 if __name__=="__main__":
     pos = [300,300,0]
-    print eubik(pos)
+    print(eubik(pos))
 
     try:
-        print math.asin(145/np.linalg.norm(pos[0:1]))
+        print(math.asin(145/np.linalg.norm(pos[0:1])))
     except:
-        print "nontriangle"
+        print("nontriangle")

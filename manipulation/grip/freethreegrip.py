@@ -4,7 +4,7 @@ import os
 
 import MySQLdb as mdb
 import numpy as np
-from manipulation.grip.robotiq85 import rtq85nm
+# from manipulation.grip.robotiq85 import rtq85nm
 from manipulation.grip.hrp5three import hrp5threenm
 from panda3d.bullet import BulletWorld
 from panda3d.core import *
@@ -106,7 +106,7 @@ class Freethreegrip(fgcp.FreegripContactpairs):
         self.counter = 0
 
         while self.counter < self.facetpairs.shape[0]:
-            print str(self.counter) + "/" + str(self.facetpairs.shape[0]-1)
+            print(str(self.counter) + "/" + str(self.facetpairs.shape[0]-1))
             # print self.gripcontactpairs_precc
 
             facetpair = self.facetpairs[self.counter]
@@ -137,7 +137,7 @@ class Freethreegrip(fgcp.FreegripContactpairs):
                 result = self.bulletworld.contactTest(self.hndbullnode)
 
                 if not result.getNumContacts():
-                    print "add handcc"
+                    print("add handcc")
                     self.gripcontacts.append(contactpair)
                     self.griprotmats.append(tmphand.getMat())
                     self.gripjawwidth.append(fgrdist)
@@ -171,7 +171,7 @@ class Freethreegrip(fgcp.FreegripContactpairs):
                 result = self.bulletworld.contactTest(self.hndbullnode)
 
                 if not result.getNumContacts():
-                    print "add handcc"
+                    print("add handcc")
                     self.gripcontacts.append(contactpair)
                     self.griprotmats.append(tmphand.getMat())
                     self.gripjawwidth.append(fgrdist)
@@ -214,7 +214,7 @@ class Freethreegrip(fgcp.FreegripContactpairs):
         bulletworldray = BulletWorld()
         bulletworldray.attachRigidBody(self.objmeshbullnode)
         while self.counter < self.facetpairs.shape[0]:
-            print str(self.counter) + "/" + str(self.facetpairs.shape[0]-1)
+            print( str(self.counter) + "/" + str(self.facetpairs.shape[0]-1))
             # cct0 first
             self.gripcontactpairs_precc.append([])
             self.gripcontactpairnormals_precc.append([])
@@ -300,7 +300,7 @@ class Freethreegrip(fgcp.FreegripContactpairs):
                     result = self.bulletworld.contactTest(handpccbullnode)
 
                     if not result.getNumContacts():
-                        print "add precc"
+                        print( "add precc")
                         self.gripcontactpairs_precc[-1].append(contactpair)
                         self.gripcontactpairnormals_precc[-1].append(self.gripcontactpairnormals[self.counter][j])
                         self.gripcontactpairfacets_precc[-1].append(self.gripcontactpairfacets[self.counter])
@@ -376,7 +376,7 @@ class Freethreegrip(fgcp.FreegripContactpairs):
                     result = self.bulletworld.contactTest(handpccbullnode)
 
                     if not result.getNumContacts():
-                        print "add precc"
+                        print( "add precc")
                         self.flipgripcontactpairs_precc[-1].append(contactpair)
                         self.flipgripcontactpairnormals_precc[-1].append(
                             self.gripcontactpairnormals[self.counter][j])
@@ -400,11 +400,14 @@ class Freethreegrip(fgcp.FreegripContactpairs):
         # save to database
         gdb = db.GraspDB()
 
+        print("HandName: " + str(self.handname))
+
         idhand = gdb.loadIdHand(self.handname)
 
         sql = "SELECT * FROM freeairgrip, object WHERE freeairgrip.idobject = object.idobject AND \
                 object.name LIKE '%s' AND freeairgrip.idhand LIKE '%s'" % (self.dbobjname, idhand)
         result = gdb.execute(sql)
+        print("ObjectName: " + str(self.dbobjname))
         if not result:
             sql = "SELECT idobject FROM object WHERE name LIKE '%s'" % self.dbobjname
             returnlist = gdb.execute(sql)
@@ -413,7 +416,7 @@ class Freethreegrip(fgcp.FreegripContactpairs):
             else:
                 sql = "INSERT INTO object(name) VALUES('%s')" % self.dbobjname
                 idobject = gdb.execute(sql)
-            print self.gripcontacts
+            print( self.gripcontacts)
             for i in range(len(self.gripcontacts)):
                 sql = "INSERT INTO freeairgrip(idobject, contactpnt0, contactpnt1, \
                         contactnormal0, contactnormal1, rotmat, jawwidth, idhand) \
@@ -423,7 +426,7 @@ class Freethreegrip(fgcp.FreegripContactpairs):
                        dc.mat4ToStr(self.griprotmats[i]), str(self.gripjawwidth[i]), idhand)
                 gdb.execute(sql)
         else:
-            print "Grasps already saved or duplicated filename!"
+            print( "Grasps already saved or duplicated filename!")
 
     def removeFgrpccShow(self, base, discretesize = 8):
         """
@@ -709,7 +712,7 @@ class Freethreegrip(fgcp.FreegripContactpairs):
         if self.counter >= self.facetpairs.shape[0]:
             return
         else:
-            print str(self.counter) + "/" + str(self.facetpairs.shape[0]-1)
+            print( str(self.counter) + "/" + str(self.facetpairs.shape[0]-1))
 
             facetpair = self.facetpairs[self.counter]
             facetidx0 = facetpair[0]
@@ -895,7 +898,7 @@ class Freethreegrip(fgcp.FreegripContactpairs):
         if self.counter >= self.facetpairs.shape[0]:
             self.counter = 0
 
-        print str(self.counter) + "/" + str(self.facetpairs.shape[0]-1)
+        print( str(self.counter) + "/" + str(self.facetpairs.shape[0]-1))
 
         facetpair = self.facetpairs[self.counter]
         facetidx0 = facetpair[0]
@@ -903,7 +906,7 @@ class Freethreegrip(fgcp.FreegripContactpairs):
 
         # cct0 first
         for j, contactpair in enumerate(self.gripcontactpairs_precc[self.counter]):
-            print j, contactpair
+            print( j, contactpair)
             cctpnt0 = contactpair[0] + plotoffsetfp * self.facetnormals[facetidx0]
             cctpnt1 = contactpair[1] + plotoffsetfp * self.facetnormals[facetidx1]
             cctnormal0 = self.gripcontactpairnormals_precc[self.counter][j][0]
@@ -941,7 +944,7 @@ class Freethreegrip(fgcp.FreegripContactpairs):
 
         # cct1 first
         for j, contactpair in enumerate(self.flipgripcontactpairs_precc[self.counter]):
-            print j, contactpair
+            print( j, contactpair)
             cctpnt1 = contactpair[0] + plotoffsetfp * self.facetnormals[facetidx0]
             cctpnt0 = contactpair[1] + plotoffsetfp * self.facetnormals[facetidx1]
             cctnormal1 = self.flipgripcontactpairnormals_precc[self.counter][j][0]
@@ -1040,6 +1043,7 @@ if __name__=='__main__':
     # objpath = os.path.join(this_dir, "objects", "planerearstay.stl")
 
     handpkg = hrp5threenm
+    # handpkg = rtq85nm
     freegriptst = Freethreegrip(objpath, handpkg, readser=False, torqueresist = 100)
 
     freegriptst.segShow(base, togglesamples=False, togglenormals=False,
@@ -1061,7 +1065,7 @@ if __name__=='__main__':
     #     freegriptst.removeFgrpcc(base)
     #     freegriptst.removeHndcc(base)
     #     toc = time.clock()
-    #     print toc-tic
+    #     print( toc-tic)
     #     fo.write(os.path.basename(objpath)+' '+str(toc-tic)+'\n')
     # fo.close()
 
@@ -1089,7 +1093,7 @@ if __name__=='__main__':
     # freegriptst.removeFgrpcc(base)
     # def updateshow(task):
     #     freegriptst.pairShow(base, togglecontacts=True, togglecontactnormals=True)
-    #     # print task.delayTime
+    #     # print( task.delayTime)
     #     # if abs(task.delayTime-13) < 1:
     #     #     task.delayTime -= 12.85
     #     return task.again
@@ -1106,7 +1110,7 @@ if __name__=='__main__':
     #     # freegriptst.removeFgrpccShow(base)
     #     # freegriptst.removeFgrpccShowLeft(base)
     #     freegriptst.removeHndccShow(base)
-    #     # print task.delayTime
+    #     # print( task.delayTime)
     #     # if abs(task.delayTime-13) < 1:
     #     #     task.delayTime -= 12.85
     #     return task.again

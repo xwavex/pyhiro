@@ -67,12 +67,12 @@ class TablePlacements(object):
         result = gdb.execute(sql)
         if len(result) == 0:
             sql = "INSERT INTO angle(value) VALUES "
-            for i in range(discretesize):
+            for i in range(int(discretesize)):
                 sql += "("+str(360*i*1.0/discretesize)+"), "
             sql = sql[:-2]+";"
             gdb.execute(sql)
         else:
-            print "Angles already set!"
+            print("Angles already set!")
 
         # save tabletopplacements
         sql = "SELECT idtabletopplacements FROM tabletopplacements,freetabletopplacement,object WHERE \
@@ -114,7 +114,7 @@ class TablePlacements(object):
             sql = sql[:-2]+";"
             gdb.execute(sql)
         else:
-            print "Tabletopplacements already exist!"
+            print("Tabletopplacements already exist!")
 
         # save tabletopgrips
         idhand = gdb.loadIdHand(self.handname)
@@ -187,9 +187,9 @@ class TablePlacements(object):
                             dc.mat4ToStr(ttpgriprotmat), str(jawwidth), idfreegrip, idtabletopplacements)
                     gdb.execute(sql)
         else:
-            print "Tabletopgrips already exist!"
+            print("Tabletopgrips already exist!")
 
-        print "Save to DB done!"
+        print("Save to DB done!")
 
     def updateDBwithIK(self, gdb, robot, armname = 'rgt'):
         """
@@ -207,15 +207,18 @@ class TablePlacements(object):
         """
 
         # load idarm
+        print("updateDBwithIK: 1")
         idarm = gdb.loadIdArm(armname)
 
         # load retraction distances
+        print("updateDBwithIK: 2")
         rethandx, retworldz, retworlda, worldz = gdb.loadIKRet()
         # worlda is default for the general grasps on table top
         # for assembly at start and goal, worlda is computed by assembly planner
         worlda = Vec3(0,0,1)
 
         # select idrobot
+        print("updateDBwithIK: 3")
         idrobot = gdb.loadIdRobot(robot)
 
         feasibility = {}
@@ -224,21 +227,32 @@ class TablePlacements(object):
         feasibility_worlda = {}
         feasibility_worldaworldz = {}
 
+        print("updateDBwithIK: 3 self.dbobjname = " + str(self.dbobjname))
+
         sql = "SELECT tabletopgrips.idtabletopgrips, tabletopgrips.contactpnt0, tabletopgrips.contactpnt1, \
                 tabletopgrips.rotmat FROM tabletopgrips, tabletopplacements, freetabletopplacement, object WHERE \
                  tabletopgrips.idtabletopplacements = tabletopplacements.idtabletopplacements AND \
                   tabletopplacements.idfreetabletopplacement = freetabletopplacement.idfreetabletopplacement AND \
                    freetabletopplacement.idobject = object.idobject AND object.name LIKE '%s'" % self.dbobjname
+        print("updateDBwithIK: 4")
         result = gdb.execute(sql)
         if len(result) == 0:
             raise ValueError("Plan the tabletopgrips first!")
         idcounter = 0
         tic = time.clock()
+        print("RESULT LEN FOR " + str(armname) + " = " + str(len(result)))
+        breakat = 100
+        breakcount = 0
+        print("updateDBwithIK: 5")
         for resultrow in result:
-            print idcounter*1.0/len(result)
+            print("updateDBwithIK: " + str(idcounter) + "/" + str(len(result)))
+            breakcount = breakcount + 1
+            if breakcount == breakat:
+                break
+            print(idcounter*1.0/len(result))
             idcounter += 1
             toc = time.clock()
-            print toc-tic
+            print(toc-tic)
             ttgsid = int(resultrow[0])
             ttgscct0 = dc.strToV3(resultrow[1])
             ttgscct1 = dc.strToV3(resultrow[2])
@@ -293,7 +307,9 @@ class TablePlacements(object):
                 freetabletopplacement.idobject = object.idobject AND object.name LIKE '%s' AND \
                 tabletopplacements.idangle = angle.idangle AND \
                 freetabletopplacement.idfreetabletopplacement = %d AND angle.value = %d" % (self.dbobjname, 1, 45)
+        # WHY 1 and why 45.0?
         result = gdb.execute(sql)
+        print("SHOW RESULT LEN = " + str(len(result)))
         if len(result) != 0:
             for resultrow in result:
                 idtabletopplacements = int(resultrow[0])
@@ -332,6 +348,7 @@ if __name__ == '__main__':
 
     base = pandactrl.World(camp=[1000,400,1000], lookatp=[400,0,0])
     this_dir, this_filename = os.path.split(__file__)
+    print("BEGIN")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "sandpart.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "ttube.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "tool.stl")
@@ -346,7 +363,7 @@ if __name__ == '__main__':
     from manipulation.grip.hrp5three import hrp5threenm
     handpkg = hrp5threenm
     # handpkg = rtq85nm
-    print objpath
+    print(objpath)
     tps = TablePlacements(objpath, handpkg)
 
     # plot obj and its convexhull
@@ -384,6 +401,7 @@ if __name__ == '__main__':
     #     world.doPhysics(globalClock.getDt())
     #     return task.cont
 
+    print("BUILD GRID SPACE")
     # build grid space
     grids = []
     for x in range(400,551,100):
@@ -400,8 +418,12 @@ if __name__ == '__main__':
     # tps.updateDBwithIK(gdb, hrp5n, armname = "lft")
     # tps.updateDBwithIK(gdb, nxtrobot, armname = "rgt")
     # tps.updateDBwithIK(gdb, nxtrobot, armname = "lft")
+    print("BEFORE rgt")
     tps.updateDBwithIK(gdb, hrp2k, armname = "rgt")
+    print("AFTER rgt")
+    print("BEFORE lft")
     tps.updateDBwithIK(gdb, hrp2k, armname = "lft")
+    print("AFTER lft")
 
     # bullcldrnp = base.render.attachNewNode("bulletcollider")
     # debugNode = BulletDebugNode('Debug')

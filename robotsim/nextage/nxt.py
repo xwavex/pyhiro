@@ -1,9 +1,9 @@
 import numpy as np
-import exceptions as ep
+# import exceptions as ep
 import utils.robotmath as rm
 import pandaplotutils.pandactrl as pandactrl
 import pandaplotutils.pandageom as pg
-import nxtik
+from . import nxtik
 
 class NxtRobot():
     def __init__(self):
@@ -104,7 +104,7 @@ class NxtRobot():
     #     """
     #
     #     if armid!="rgt" and armid!="lft":
-    #         raise ep.ValueError
+    #         raise ValueError
     #
     #     armlj = self.rgtarm
     #     if armid == "lft":
@@ -315,9 +315,9 @@ class NxtRobot():
         counter = 0
         for i in self.__targetjoints:
             if armjnts[counter] < armlj[i]["rngmin"] or armjnts[counter]>armlj[i]["rngmax"]:
-                # print "Joint "+ str(i) + " of the " + armid + " arm is out of range"
-                # print "Angle is " + str(armjnts[i])
-                # print "Range is (" + str(armlj[i+1]["rngmin"]) + ", " + str(armlj[i+1]["rngmax"]) + ")"
+                # print("Joint "+ str(i) + " of the " + armid + " arm is out of range")
+                # print("Angle is " + str(armjnts[i]))
+                # print("Range is (" + str(armlj[i+1]["rngmin"]) + ", " + str(armlj[)i+1]["rngmax"]) + ")"
                 return False
             counter += 1
 
@@ -351,9 +351,9 @@ class NxtRobot():
         jntanglesdrag = []
         for i in self.__targetjoints:
             if armjnts[counter] < armlj[i]["rngmin"]:
-                # print "Joint "+ str(i) + " of the " + armid + " arm is out of range"
-                # print "Angle is " + str(armjnts[counter])
-                # print "Range is (" + str(armlj[i]["rngmin"]) + ", " + str(armlj[i]["rngmax"]) + ")"
+                # print("Joint "+ str(i) + " of the " + armid + " arm is out of range")
+                # print("Angle is " + str(armjnts[counter]))
+                # print("Range is (" + str(armlj[i]["rngmin"]) + ", " + str(armlj[i]["rngmax"]) + )")"
                 bdragged = True
                 jntanglesdrag.append(armlj[i]["rngmin"])
             elif armjnts[counter] > armlj[i]["rngmax"]:
@@ -675,7 +675,7 @@ if __name__=="__main__":
     # # angle = nxtik.eurgtbik(objpos)
     # # nxtrobot.movewaist(angle)
     # # armjntsgoal=nxtik.numik(nxtrobot, objpos, objrot)
-    # # print armjntsgoal
+    # # print(armjntsgoal)
     #
     # pandamat4=Mat4()
     # pandamat4.setRow(3,Vec3(0,0,250))
@@ -686,7 +686,7 @@ if __name__=="__main__":
     #
     armid = "lft"
     armjntsgoal7 = nxtrobot.numikr(objpos, objrot, armid)
-    print armjntsgoal7
+    print(armjntsgoal7)
     if armjntsgoal7 is not None:
         nxtrobot.movearmfkr(armjntsgoal7, armid)
     nxtmesh = nmg.genmnp(nxtrobot)
@@ -695,7 +695,7 @@ if __name__=="__main__":
     # armid= "rgt"
     # objrot = np.array([[0,-1,0],[-1,0,0],[0,0,-1]])
     # armjntsgoal6 =  nxtrobot.numik(objpos, objrot, armid)
-    # print armjntsgoal6
+    # print(armjntsgoal6)
     # if armjntsgoal6 is not None:
     #     nxtrobot.movearmfk(armjntsgoal6, armid)
     #     nxtmnp = nxtplot.genmnp_nm(nxtrobot, handpkg, plotcolor=[1,0,1,.51])

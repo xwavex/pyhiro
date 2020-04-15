@@ -43,7 +43,7 @@ def getMotionSequence(regrip, id, choice):
         directshortestpaths = regrip.directshortestpaths_startlftgoallft
 
     if len(directshortestpaths) == 0:
-        print "no path found"
+        print("no path found")
         return
 
     pathnidlist = directshortestpaths[id]
@@ -51,7 +51,7 @@ def getMotionSequence(regrip, id, choice):
     objmat4list = []
     jawwidth = []
     extendedpathnidlist = []
-    print pathnidlist
+    print(pathnidlist)
     for i in range(len(pathnidlist) - 1):
         if i == 0 and len(pathnidlist) == 2:
             # two node path
@@ -397,7 +397,7 @@ def getMotionSequence(regrip, id, choice):
                 extendedpathnidlist.append(nid)
                 extendedpathnidlist.append(nid)
             else:
-                print regrip.regg.edge[pathnidlist[i]][pathnidlist[i+1]]['edgetype']
+                print(regrip.regg.edge[pathnidlist[i]][pathnidlist[i+1]]['edgetype'])
                 # not two node path, middle nodes, if transfer
                 ## middle first
                 if nid.startswith('ho'):
@@ -538,7 +538,7 @@ def getMotionSequence(regrip, id, choice):
             # not two node path, end nodes, transfer
             ## second to last node
             nid = pathnidlist[i]
-            # print nid
+            # print(nid)
             if nid.startswith('ho'):
                 pass
             else:
@@ -734,14 +734,14 @@ if __name__=='__main__':
 
     count = 0
     while True:
-        print "new search"
+        print("new search")
         tic = time.clock()
         if count == 0:
             regrip.findshortestpath(startrotmat4, goalrotmat4, base, bagain = False)
         else:
             regrip.findshortestpath(startrotmat4, goalrotmat4, base, bagain = True)
         toc = time.clock()
-        print toc-tic
+        print(toc-tic)
         # assert False
         #
         pltfig = plt.figure()
@@ -765,7 +765,7 @@ if __name__=='__main__':
             hrp5nrobot.movealljnts([numikrms[i][0], 0, 0]+numikrms[i][1].tolist()+lftarmjnts)
             cdchecker =  cc.CollisionChecker(robotmesh)
             if cdchecker.isSelfCollided(hrp5nrobot):
-                print i, pathnidlist[i], pathnidlist
+                print(i, pathnidlist[i], pathnidlist)
                 regrip.removeBadNodes([pathnidlist[i]])
                 bcdfree = False
                 hrp5nrobot.goinitpose()
@@ -784,8 +784,8 @@ if __name__=='__main__':
                 rbtmnp[0].detachNode()
             if objmnp[0] is not None:
                 objmnp[0].detachNode()
-            print counter[0]
-            print numikrms[counter[0]]
+            print(counter[0])
+            print(numikrms[counter[0]])
             # rotate lfthand by 180, because left and right hand are symmetric
             lftarmjnts = numikrms[counter[0]][2].tolist()
             lftarmjnts[-1] = lftarmjnts[-1]+180

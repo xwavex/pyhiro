@@ -33,7 +33,7 @@ def strToMat4(dbstr):
     """
 
     exx = dbstr.split(',')
-    exxdecimal = map(float, exx)
+    exxdecimal = list(map(float, exx))
     assert(len(exxdecimal) is 16)
     return Mat4(exxdecimal[0], exxdecimal[1], exxdecimal[2], exxdecimal[3],
                 exxdecimal[4], exxdecimal[5], exxdecimal[6], exxdecimal[7],
@@ -77,6 +77,6 @@ def strToV3(dbstr):
     """
 
     exx = dbstr.split(',')
-    exxdecimal = map(float, exx)
+    exxdecimal = list(map(float, exx))
     assert(len(exxdecimal) is 3)
     return VBase3(exxdecimal[0], exxdecimal[1], exxdecimal[2])

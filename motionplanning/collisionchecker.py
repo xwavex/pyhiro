@@ -116,7 +116,7 @@ class CollisionChecker(object):
         sglbullnode = cd.genCollisionMeshMultiNp(sglmnps[-1], basenodepath=None, name='autogen')
         sglbullnodesrgt.append(sglbullnode)
         if self.__isSglArmCollided(sglbullnodesrgt):
-            print "right arm self collision!"
+            print("right arm self collision!")
             return True
         else:
             sglmnps = dualmnps[1]
@@ -128,12 +128,12 @@ class CollisionChecker(object):
             sglbullnode = cd.genCollisionMeshMultiNp(sglmnps[-1], basenodepath=None, name='autogen')
             sglbullnodeslft.append(sglbullnode)
             if self.__isSglArmCollided(sglbullnodeslft):
-                print "left arm self collision!"
+                print("left arm self collision!")
                 return True
 
         # dual arm check
         if self.__isDualArmCollided(sglbullnodesrgt, sglbullnodeslft):
-            print "left-right arm self collision!"
+            print("left-right arm self collision!")
             return True
         #
         # arm body check
@@ -144,10 +144,10 @@ class CollisionChecker(object):
                 bodybullnode = cd.genCollisionMeshMultiNp(bodymnp, basenodepath=None, name='autogen')
                 bdybullnodes.append(bodybullnode)
         if self.__isSglArmBdyCollided(sglbullnodesrgt, bdybullnodes):
-            print "right arm body self collision!"
+            print("right arm body self collision!")
             return True
         if self.__isSglArmBdyCollided(sglbullnodeslft, bdybullnodes):
-            print "left right body arm self collision!"
+            print("left right body arm self collision!")
             return True
 
         # for bullnode in sglbullnodesrgt[-4:]:
@@ -172,7 +172,7 @@ class CollisionChecker(object):
         date: 20170613
         """
 
-        print self.counter
+        print(self.counter)
         if self.counter > 200:
             self.counter = 0
             self.bulletworld = BulletWorld()
@@ -211,26 +211,26 @@ class CollisionChecker(object):
             for i in range(nlinkrgt - 1, nlinkrgt):
                 result = self.bulletworld.contactTestPair(sglbullnodesrgt[i], obstaclebullnode)
                 if result.getNumContacts():
-                    print "rgtarm-obstacle collision!"
+                    print("rgtarm-obstacle collision!")
                     return True
             for i in range(nlinklft - 1, nlinklft):
                 result = self.bulletworld.contactTestPair(sglbullnodeslft[i], obstaclebullnode)
                 if result.getNumContacts():
-                    print "lftarm-obstacle collision!"
+                    print("lftarm-obstacle collision!")
                     return True
         #
         # # sgl arm check
         # if self.__isSglArmCollided(sglbullnodesrgt):
-        #     print "right arm self collision!"
+        #     print("right arm self collision!")
         #     return True
         # else:
         #     if self.__isSglArmCollided(sglbullnodeslft):
-        #         print "left arm self collision!"
+        #         print("left arm self collision!")
         #         return True
         #
         # # dual arm check
         # if self.__isDualArmCollided(sglbullnodesrgt, sglbullnodeslft):
-        #     print "left-right arm self collision!"
+        #     print("left-right arm self collision!")
         #     return True
         # #
         # # arm body check
@@ -241,10 +241,10 @@ class CollisionChecker(object):
         #         bodybullnode = cd.genCollisionMeshMultiNp(bodymnp, basenodepath=None, name='autogen')
         #         bdybullnodes.append(bodybullnode)
         # if self.__isSglArmBdyCollided(sglbullnodesrgt, bdybullnodes):
-        #     print "right arm body self collision!"
+        #     print("right arm body self collision!")
         #     return True
         # if self.__isSglArmBdyCollided(sglbullnodeslft, bdybullnodes):
-        #     print "left right body arm self collision!"
+        #     print("left right body arm self collision!")
         #     return True
 
         # for bullnode in sglbullnodesrgt:
@@ -306,7 +306,7 @@ if __name__=="__main__":
     pg.plotAxisSelf(base.render, Vec3(0,0,0))
 
     cdchecker = CollisionChecker(robotmesh)
-    print cdchecker.isSelfCollided(robot)
+    print(cdchecker.isSelfCollided(robot))
 
     bullcldrnp = base.render.attachNewNode("bulletcollider")
     debugNode = BulletDebugNode('Debug')

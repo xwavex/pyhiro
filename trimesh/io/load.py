@@ -75,7 +75,6 @@ def load_mesh(obj, file_type=None, process=True):
           depending on the file format. 
     
     '''
-
     if is_string(obj):
         file_type = (str(obj).split('.')[-1]).lower()
         obj = open(obj, 'rb')
@@ -93,6 +92,8 @@ def load_mesh(obj, file_type=None, process=True):
               _mesh_loaders[file_type].__name__)
 
     meshes = [Trimesh(process=process, **i) for i in make_sequence(loaded)]
+
+    meshes = list(meshes)
     
     if len(meshes) == 1: 
         return meshes[0]

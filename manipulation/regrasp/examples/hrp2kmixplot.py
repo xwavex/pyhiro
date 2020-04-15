@@ -44,7 +44,7 @@ def getMotionSequence(regrip, id, choice):
         directshortestpaths = regrip.directshortestpaths_startlftgoallft
 
     if len(directshortestpaths) == 0:
-        print "no path found"
+        print("no path found")
         return
 
     pathnidlist = directshortestpaths[id]
@@ -367,7 +367,7 @@ def getMotionSequence(regrip, id, choice):
                 objmat4list.append(objmat4b)
                 objmat4list.append(objmat4b)
             else:
-                print regrip.regg.edge[pathnidlist[i]][pathnidlist[i+1]]['edgetype']
+                print(regrip.regg.edge[pathnidlist[i]][pathnidlist[i+1]]['edgetype'])
                 # not two node path, middle nodes, if transfer
                 ## middle first
                 if nid.startswith('ho'):
@@ -496,7 +496,7 @@ def getMotionSequence(regrip, id, choice):
             # not two node path, end nodes, transfer
             ## second to last node
             nid = pathnidlist[i]
-            print nid
+            print(nid)
             if nid.startswith('ho'):
                 pass
             else:
@@ -617,26 +617,32 @@ def getMotionSequence(regrip, id, choice):
     return [objmat4list, numikrlist, jawwidth]
 
 if __name__=='__main__':
+    print("Hrp2KRobot: 1")
     gdb = db.GraspDB()
     # handpkg = rtq85nm
     # nxtrobot = nxt.NxtRobot()
     handpkg = hrp5threenm
     # hrp5nrobot = hrp5n.Hrp5NRobot()
+    print("Hrp2KRobot: 2")
     hrp2k = hrp2k.Hrp2KRobot()
 
+    print("Hrp2KRobot: 3")
     base = pandactrl.World(camp=[4000,0,2500], lookatp=[0,0,0])
     # base = pandactrl.World(camp=[300,-2000,1000], lookatp=[300,0,0])
 
     # ttube.stl
+    print("Hrp2KRobot: 4")
     this_dir, this_filename = os.path.split(__file__)
     # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "sandpart.stl")
     # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "ttube.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0], "grip", "objects", "tool.stl")
+    print("Hrp2KRobot: 5")
     objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "tool2.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0], "grip", "objects", "planewheel.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0], "grip", "objects", "planelowerbody.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0], "grip", "objects", "planefrontstay.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0], "grip", "objects", "planerearstay.stl")
+    print("Hrp2KRobot: 6")
     regrip = regriptppfp.RegripTppFp(objpath, hrp2k, handpkg, gdb, base, tableheight = -200)
 
     # ttube
@@ -683,13 +689,15 @@ if __name__=='__main__':
     # hrp2kmnp.reparentTo(base.render)
     #
     #
+    print("Hrp2KRobot: 7")
     import time
     tic = time.clock()
     regrip.findshortestpath(startrotmat4, goalrotmat4, base)
     toc = time.clock()
-    print toc-tic
+    print(toc-tic)
     # assert False
     #
+    print("Hrp2KRobot: 8")
     pltfig = plt.figure()
     regrip.plotgraph(pltfig)
     id = 0
@@ -697,10 +705,12 @@ if __name__=='__main__':
     choice = 'startrgtgoalrgt'
     # choice = 'startlftgoalrgt'
     choice = 'startrgtgoallft'
+    print("Hrp2KRobot: 9")
     regrip.plotshortestpath(pltfig, id = id, choice = choice)
     plt.axis("equal")
     plt.show()
     #
+    print("Hrp2KRobot: 10")
     [objms, numikrms, jawwidth] = getMotionSequence(regrip, id = id, choice = choice)
     hrp2kmnp = [None]
     objmnp = [None]
@@ -711,8 +721,8 @@ if __name__=='__main__':
                 hrp2kmnp[0].detachNode()
             if objmnp[0] is not None:
                 objmnp[0].detachNode()
-            print counter[0]
-            print numikrms[counter[0]]
+            print(counter[0])
+            print(numikrms[counter[0]])
             hrp2k.movealljnts([numikrms[counter[0]][0], 0, 0]+numikrms[counter[0]][1].tolist()+numikrms[counter[0]][2].tolist() )
             hrp2kmnp[0] = hrp2kplot.genmnp(hrp2k, handpkg, jawwidthrgt=jawwidth[counter[0]][0], jawwidthlft=jawwidth[counter[0]][1])
             hrp2k.goinitpose()
@@ -751,5 +761,5 @@ if __name__=='__main__':
     # ttl = loader.loadModel(ttpath)
     # ttl.instanceTo(ttnodepath)
     # ttnodepath.reparentTo(base.render)
-
+    print("Hrp2KRobot: 11")
     base.run()

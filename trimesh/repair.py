@@ -8,6 +8,10 @@ from .triangles import normals
 from .util      import is_sequence
 from .constants import log, tol
 
+def connected_component_subgraphs(G):
+    for c in nx.connected_components(G):
+        yield G.subgraph(c)
+
 def fix_face_winding(mesh):
     '''
     Traverse and change mesh faces in-place to make sure winding is coherent, 
@@ -27,8 +31,9 @@ def fix_face_winding(mesh):
 
     # we are going to traverse the graph using BFS, so we have to start
     # a traversal for every connected component
-    for graph in nx.connected_component_subgraphs(graph_all):
-        start = graph.nodes()[0]
+    for graph in connected_component_subgraphs(graph_all):
+        # start = graph.nodes()[0]
+        start = list(graph.nodes())[0]
         # we traverse every pair of faces in the graph
         # we modify mesh.faces and mesh.face_normals in place 
         for face_pair in nx.bfs_edges(graph, start):

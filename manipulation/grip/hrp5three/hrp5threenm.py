@@ -13,7 +13,7 @@ from panda3d.bullet import BulletTriangleMesh
 from panda3d.bullet import BulletTriangleMeshShape
 from panda3d.bullet import BulletWorld
 from panda3d.core import *
-import hrp5three
+from . import hrp5three
 
 from utils import designpattern
 
@@ -69,9 +69,9 @@ class Hrp5ThreeNM():
                                                                      "HRP-5P_ConceptDesign_Rfinger_Link2.egg"))
         # finger tips
         leftfgrpccpath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5threeegg",
-                                                                 "HRP-5P_ConceptDesign_Lfinger_Tippcc_cylinder.egg"))
+                                                                 "HRP-5P_ConceptDesign_Lfinger_Tippcc.egg"))
         rightfgrpccpath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5threeegg",
-                                                                 "HRP-5P_ConceptDesign_Rfinger_Tippcc_cylinder.egg"))
+                                                                 "HRP-5P_ConceptDesign_Rfinger_Tippcc.egg"))
 
         # loader is a global variable defined by panda3d
         hrp5three_basel = loader.loadModel(hrp5threebasepath)

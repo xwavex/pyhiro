@@ -51,21 +51,21 @@ def genmnp(hrp5nrobot, handpkg, jawwidthrgt = None, jawwidthlft = None):
     this_dir, this_filename = os.path.split(__file__)
 
     # chest0-2, head1 (neck is not plotted)
-    hrp5nbody_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Body.egg"))
+    # hrp5nbody_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Body.egg"))
     hrp5nchest0_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Chest_Link0.egg"))
     hrp5nchest1_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Chest_Link1.egg"))
     hrp5nchest2_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Chest_Link2.egg"))
     hrp5nhead0_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Head_Link0.egg"))
     hrp5nhead1_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Head_Link1.egg"))
 
-    hrp5nbody_model  = loader.loadModel(hrp5nbody_filepath)
+    # hrp5nbody_model  = loader.loadModel(hrp5nbody_filepath)
     hrp5nchest0_model  = loader.loadModel(hrp5nchest0_filepath)
     hrp5nchest1_model = loader.loadModel(hrp5nchest1_filepath)
     hrp5nchest2_model = loader.loadModel(hrp5nchest2_filepath)
     hrp5nhead0_model = loader.loadModel(hrp5nhead0_filepath)
     hrp5nhead1_model = loader.loadModel(hrp5nhead1_filepath)
 
-    hrp5nbody_nodepath = NodePath("hrp5nbody")
+    # hrp5nbody_nodepath = NodePath("hrp5nbody")
     hrp5nchest0_nodepath = NodePath("hrp5nchest0")
     hrp5nchest1_nodepath = NodePath("hrp5nchest1")
     hrp5nchest2_nodepath = NodePath("hrp5nchest2")
@@ -73,10 +73,10 @@ def genmnp(hrp5nrobot, handpkg, jawwidthrgt = None, jawwidthlft = None):
     hrp5nhead1_nodepath = NodePath("hrp5nhead1")
 
     # body
-    hrp5nbody_model.instanceTo(hrp5nbody_nodepath)
-    hrp5nbody_rotmat = Mat4.identMat()
-    hrp5nbody_nodepath.setMat(hrp5nbody_rotmat)
-    hrp5nbody_nodepath.setZ(0)
+    # hrp5nbody_model.instanceTo(hrp5nbody_nodepath)
+    # hrp5nbody_rotmat = Mat4.identMat()
+    # hrp5nbody_nodepath.setMat(hrp5nbody_rotmat)
+    # hrp5nbody_nodepath.setZ(0)
     # chest
     hrp5nchest0_model.instanceTo(hrp5nchest0_nodepath)
     hrp5nchest0_rotmat = Mat4.identMat()
@@ -97,8 +97,9 @@ def genmnp(hrp5nrobot, handpkg, jawwidthrgt = None, jawwidthlft = None):
     hrp5nhead1_nodepath.setX(40)
     hrp5nhead1_nodepath.setColor(.5,.5,.5,1)
 
-    hrp5nbody_nodepath.reparentTo(hrp5nmnp)
-    hrp5nchest0_nodepath.reparentTo(hrp5nbody_nodepath)
+    # hrp5nbody_nodepath.reparentTo(hrp5nmnp)
+    hrp5nchest0_nodepath.reparentTo(hrp5nmnp)
+    # hrp5nchest0_nodepath.reparentTo(hrp5nbody_nodepath)
     hrp5nchest1_nodepath.reparentTo(hrp5nchest0_nodepath)
     hrp5nchest2_nodepath.reparentTo(hrp5nchest1_nodepath)
     hrp5nhead0_nodepath.reparentTo(hrp5nchest2_nodepath)
@@ -307,21 +308,21 @@ def genmnplist(hrp5nrobot, handpkg, jawwidthrgt = None, jawwidthlft = None):
     this_dir, this_filename = os.path.split(__file__)
 
     # chest0-2, head1 (neck is not plotted)
-    hrp5nbody_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Body.egg"))
+    # hrp5nbody_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Body.egg"))
     hrp5nchest0_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Chest_Link0.egg"))
     hrp5nchest1_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Chest_Link1.egg"))
     hrp5nchest2_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Chest_Link2.egg"))
     hrp5nhead0_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Head_Link0.egg"))
     hrp5nhead1_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg", "HRP-5P_ConceptDesign_Head_Link1.egg"))
 
-    hrp5nbody_model  = loader.loadModel(hrp5nbody_filepath)
+    # hrp5nbody_model  = loader.loadModel(hrp5nbody_filepath)
     hrp5nchest0_model  = loader.loadModel(hrp5nchest0_filepath)
     hrp5nchest1_model = loader.loadModel(hrp5nchest1_filepath)
     hrp5nchest2_model = loader.loadModel(hrp5nchest2_filepath)
     hrp5nhead0_model = loader.loadModel(hrp5nhead0_filepath)
     hrp5nhead1_model = loader.loadModel(hrp5nhead1_filepath)
 
-    hrp5nbody_nodepath = NodePath("hrp5nbody")
+    # hrp5nbody_nodepath = NodePath("hrp5nbody")
     hrp5nchest0_nodepath = NodePath("hrp5nchest0")
     hrp5nchest1_nodepath = NodePath("hrp5nchest1")
     hrp5nchest2_nodepath = NodePath("hrp5nchest2")
@@ -329,10 +330,10 @@ def genmnplist(hrp5nrobot, handpkg, jawwidthrgt = None, jawwidthlft = None):
     hrp5nhead1_nodepath = NodePath("hrp5nhead1")
 
     # body
-    hrp5nbody_model.instanceTo(hrp5nbody_nodepath)
-    hrp5nbody_rotmat = Mat4.identMat()
-    hrp5nbody_nodepath.setMat(hrp5nbody_rotmat)
-    hrp5nbody_nodepath.setZ(0)
+    # hrp5nbody_model.instanceTo(hrp5nbody_nodepath)
+    # hrp5nbody_rotmat = Mat4.identMat()
+    # hrp5nbody_nodepath.setMat(hrp5nbody_rotmat)
+    # hrp5nbody_nodepath.setZ(0)
     # chest
     hrp5nchest0_model.instanceTo(hrp5nchest0_nodepath)
     hrp5nchest0_rotmat = Mat4.identMat()
@@ -353,8 +354,9 @@ def genmnplist(hrp5nrobot, handpkg, jawwidthrgt = None, jawwidthlft = None):
     hrp5nhead1_nodepath.setX(40)
     hrp5nhead1_nodepath.setColor(.5,.5,.5,1)
 
-    hrp5nbody_nodepath.reparentTo(hrp5nmnp)
-    hrp5nchest0_nodepath.reparentTo(hrp5nbody_nodepath)
+    # hrp5nbody_nodepath.reparentTo(hrp5nmnp)
+    hrp5nchest0_nodepath.reparentTo(hrp5nmnp)
+    # hrp5nchest0_nodepath.reparentTo(hrp5nbody_nodepath)
     hrp5nchest1_nodepath.reparentTo(hrp5nchest0_nodepath)
     hrp5nchest2_nodepath.reparentTo(hrp5nchest1_nodepath)
     hrp5nhead0_nodepath.reparentTo(hrp5nchest2_nodepath)
@@ -573,14 +575,14 @@ def genmnp_nm(hrp5nrobot, handpkg, jawwidthrgt = None, jawwidthlft = None):
     hrp5nhead0_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg/nomat", "HRP-5P_ConceptDesign_Head_Link0.egg"))
     hrp5nhead1_filepath = Filename.fromOsSpecific(os.path.join(this_dir, "hrp5negg/nomat", "HRP-5P_ConceptDesign_Head_Link1.egg"))
 
-    hrp5nbody_model  = loader.loadModel(hrp5nbody_filepath)
+    # hrp5nbody_model  = loader.loadModel(hrp5nbody_filepath)
     hrp5nchest0_model  = loader.loadModel(hrp5nchest0_filepath)
     hrp5nchest1_model = loader.loadModel(hrp5nchest1_filepath)
     hrp5nchest2_model = loader.loadModel(hrp5nchest2_filepath)
     hrp5nhead0_model = loader.loadModel(hrp5nhead0_filepath)
     hrp5nhead1_model = loader.loadModel(hrp5nhead1_filepath)
 
-    hrp5nbody_nodepath = NodePath("hrp5nbody")
+    # hrp5nbody_nodepath = NodePath("hrp5nbody")
     hrp5nchest0_nodepath = NodePath("hrp5nchest0")
     hrp5nchest1_nodepath = NodePath("hrp5nchest1")
     hrp5nchest2_nodepath = NodePath("hrp5nchest2")
@@ -588,10 +590,10 @@ def genmnp_nm(hrp5nrobot, handpkg, jawwidthrgt = None, jawwidthlft = None):
     hrp5nhead1_nodepath = NodePath("hrp5nhead1")
 
     # body
-    hrp5nbody_model.instanceTo(hrp5nbody_nodepath)
-    hrp5nbody_rotmat = Mat4.identMat()
-    hrp5nbody_nodepath.setMat(hrp5nbody_rotmat)
-    hrp5nbody_nodepath.setZ(0)
+    # hrp5nbody_model.instanceTo(hrp5nbody_nodepath)
+    # hrp5nbody_rotmat = Mat4.identMat()
+    # hrp5nbody_nodepath.setMat(hrp5nbody_rotmat)
+    # hrp5nbody_nodepath.setZ(0)
     # chest
     hrp5nchest0_model.instanceTo(hrp5nchest0_nodepath)
     hrp5nchest0_rotmat = Mat4.identMat()
@@ -612,8 +614,9 @@ def genmnp_nm(hrp5nrobot, handpkg, jawwidthrgt = None, jawwidthlft = None):
     hrp5nhead1_nodepath.setX(40)
     hrp5nhead1_nodepath.setColor(.5,.5,.5,1)
 
-    hrp5nbody_nodepath.reparentTo(hrp5nmnp)
-    hrp5nchest0_nodepath.reparentTo(hrp5nbody_nodepath)
+    # hrp5nbody_nodepath.reparentTo(hrp5nmnp)
+    hrp5nchest0_nodepath.reparentTo(hrp5nmnp)
+    # hrp5nchest0_nodepath.reparentTo(hrp5nbody_nodepath)
     hrp5nchest1_nodepath.reparentTo(hrp5nchest0_nodepath)
     hrp5nchest2_nodepath.reparentTo(hrp5nchest1_nodepath)
     hrp5nhead0_nodepath.reparentTo(hrp5nchest2_nodepath)

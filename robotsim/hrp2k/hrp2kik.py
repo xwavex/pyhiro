@@ -1,6 +1,6 @@
 import math
 import numpy as np
-import exceptions as ep
+# import exceptions as ep
 import utils.robotmath as rm
 
 def eubik(pos, armid="rgt"):
@@ -38,7 +38,7 @@ def jacobian(hrp2krobot, armid="rgt"):
     """
 
     if armid!="rgt" and armid!="lft":
-        raise ep.ValueError
+        raise ValueError
 
     armlj = hrp2krobot.rgtarm
     if armid == "lft":
@@ -84,7 +84,7 @@ def tcperror(hrp2krobot, tgtpos, tgtrot, armid="rgt"):
     """
 
     if armid!="rgt" and armid!="lft":
-        raise ep.ValueError
+        raise ValueError
 
     armlj = hrp2krobot.rgtarm
     if armid == "lft":
@@ -110,7 +110,7 @@ def tcperror(hrp2krobot, tgtpos, tgtrot, armid="rgt"):
                                                                   deltarot[0, 2] - deltarot[2, 0], \
                                                                   deltarot[1, 0] - deltarot[0, 1]]))
 
-    # print tgtpos, armlj[hrp2krobot.targetjoints[-1]]["linkend"], deltapos, deltarot
+    # print(tgtpos, armlj[hrp2krobot.targetjoints[-1]]["linkend"], deltapos, deltarot)
     return np.append(deltapos, deltaw)
 
 
@@ -129,7 +129,7 @@ def numik(hrp2krobot, tgtpos, tgtrot, armid="rgt"):
     """
 
     if armid!="rgt" and armid!="lft":
-        raise ep.ValueError
+        raise ValueError
 
     # stablizer
     steplength = 30
@@ -141,7 +141,7 @@ def numik(hrp2krobot, tgtpos, tgtrot, armid="rgt"):
             err = tcperror(hrp2krobot, tgtpos, tgtrot, armid)
             dq = steplength*(np.linalg.lstsq(armjac, err))[0]
         else:
-            print "The Jacobian Matrix of the specified arm is at singularity"
+            print("The Jacobian Matrix of the specified arm is at singularity")
             hrp2krobot.movearmfk(armjntssave, armid)
             return None
         if np.linalg.norm(err)<1e-4:
@@ -162,7 +162,7 @@ def numik(hrp2krobot, tgtpos, tgtrot, armid="rgt"):
                 # from manipulation.grip.robotiq85 import rtq85nm
                 # handpkg = rtq85nm
                 # hrp2kplot.plotstick(base.render, hrp2krobot)
-                # print hrp2krobot.rgtarm[hrp2krobot.targetjoints[-1]]['linkend']
+                # print(hrp2krobot.rgtarm[hrp2krobot.targetjoints[-1]]['linkend'])
                 # hrp2kmnp_nm = hrp2kplot.genmnp_nm(hrp2krobot, handpkg)
                 # hrp2kmnp_nm.setColor(.7,.2,0.7,.1)
                 # hrp2kmnp_nm.reparentTo(base.render)
@@ -201,9 +201,9 @@ def numikr(hrp2krobot, tgtpos, tgtrot, armid="rgt"):
 
 if __name__=="__main__":
     pos = [300,300,0]
-    print eubik(pos)
+    print(eubik(pos))
 
     try:
-        print math.asin(145/np.linalg.norm(pos[0:1]))
+        print(math.asin(145/np.linalg.norm(pos[0:1])))
     except:
-        print "nontriangle"
+        print("nontriangle")

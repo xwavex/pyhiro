@@ -5,6 +5,7 @@ import os
 import MySQLdb as mdb
 import numpy as np
 from manipulation.grip.robotiq85 import rtq85nm
+from manipulation.grip.hrp5three import hrp5threenm
 from panda3d.bullet import BulletWorld
 from panda3d.core import *
 
@@ -30,22 +31,34 @@ class Freegrip(fgcp.FreegripContactpairs):
         author: weiwei
         date: 20161201, osaka
         """
-
+        print("Freegrip: 1")
         super(self.__class__, self).__init__(objpath, readser)
+        print("Freegrip: 1a")
         if readser is False:
+            print("Freegrip: 1b")
             self.removeBadSamples()
+            print("Freegrip: 1c")
             self.clusterFacetSamplesRNN(reduceRadius=10)
+            print("Freegrip: 1d")
             self.planContactpairs(torqueresist)
+            print("Freegrip: 1e")
             self.saveSerialized("tmpcp.pickle")
+            print("Freegrip: 1f")
         else:
+            print("Freegrip: 1c")
             self.loadSerialized("tmpcp.pickle", objpath)
+        print("Freegrip: 2 " + str(handpkg))
         self.handpkg = handpkg
         self.hand = handpkg.newHandNM(hndcolor=[0,1,0,.1])
+        print("Freegrip: 2a")
         self.handfgrpcc_uninstanced = handpkg.newHandFgrpcc()
+        print("Freegrip: 2b")
         self.handname = handpkg.getHandName()
+        print("Freegrip: 2c")
         # gripcontactpairs_precc is the gripcontactpairs ([[p0,p1,p2],[p0',p1',p2']] pairs) after precc (collision free)
         # gripcontactpairnormals_precc is the gripcontactpairnormals ([[n0,n1,n2],[n0',n1',n2']] pairs) after precc
         # likewise, gripcontactpairfacets_precc is the [faceid0, faceid1] pair corresponding to the upper two
+        
         self.gripcontactpairs_precc = None
         self.gripcontactpairnormals_precc = None
         self.gripcontactpairfacets_precc = None
@@ -57,18 +70,24 @@ class Freegrip(fgcp.FreegripContactpairs):
         self.griprotmats = None
         self.gripjawwidth = None
         self.gripcontactnormals = None
+        print("Freegrip: 2d")
 
         self.bulletworld = BulletWorld()
+        print("Freegrip: 3")
         # prepare the model for collision detection
         self.objgeom = pandageom.packpandageom(self.objtrimesh.vertices, self.objtrimesh.face_normals, self.objtrimesh.faces)
+        print("Freegrip: 4")
         self.objmeshbullnode = cd.genCollisionMeshGeom(self.objgeom)
+        print("Freegrip: 5")
         self.bulletworld.attachRigidBody(self.objmeshbullnode)
+        print("Freegrip: 6")
 
         # for plot
         self.rtq85plotlist = []
         self.counter2 = 0
 
         # for dbupdate
+        print("Freegrip: 7")
         self.dbobjname = os.path.splitext(os.path.basename(objpath))[0]
 
     # def loadRtq85Models(self):
@@ -108,8 +127,8 @@ class Freegrip(fgcp.FreegripContactpairs):
         self.counter = 0
 
         while self.counter < self.facetpairs.shape[0]:
-            print str(self.counter) + "/" + str(self.facetpairs.shape[0]-1)
-            # print self.gripcontactpairs_precc
+            print(str(self.counter) + "/" + str(self.facetpairs.shape[0]-1))
+            # print(self.gripcontactpairs_precc)
 
             facetpair = self.facetpairs[self.counter]
             facetidx0 = facetpair[0]
@@ -131,7 +150,9 @@ class Freegrip(fgcp.FreegripContactpairs):
                     rotax = [0, 1, 0]
                     rotangle = 360.0 / discretesize * angleid
                     rotmat = rm.rodrigues(rotax, rotangle)
-                    tmphand.setMat(pandageom.cvtMat4(rotmat) * tmphand.getMat())
+
+                    blaaa = pandageom.cvtMat4(rotmat) * tmphand.getMat()
+                    tmphand.setMat(pandanpmat4 = blaaa)
                     axx = tmphand.getMat().getRow3(0)
                     # 130 is the distance from hndbase to fingertip
                     cctcenter = (cctpnt0 + cctpnt1) / 2 + 145 * np.array([axx[0], axx[1], axx[2]])
@@ -155,7 +176,7 @@ class Freegrip(fgcp.FreegripContactpairs):
                         # isplotted = 1
 
                     # reset initial hand pose
-                    tmphand.setMat(initmat)
+                    tmphand.setMat(pandanpmat4 = initmat)
             self.counter+=1
         self.counter = 0
 
@@ -178,8 +199,8 @@ class Freegrip(fgcp.FreegripContactpairs):
         self.counter = 0
 
         while self.counter < self.facetpairs.shape[0]:
-            print str(self.counter) + "/" + str(self.facetpairs.shape[0]-1)
-            print self.gripcontactpairs
+            print(str(self.counter) + "/" + str(self.facetpairs.shape[0]-1))
+            print(self.gripcontactpairs)
             self.gripcontactpairs_precc.append([])
             self.gripcontactpairnormals_precc.append([])
             self.gripcontactpairfacets_precc.append([])
@@ -244,7 +265,7 @@ class Freegrip(fgcp.FreegripContactpairs):
             else:
                 sql = "INSERT INTO object(name) VALUES('%s')" % self.dbobjname
                 idobject = gdb.execute(sql)
-            print self.gripcontacts
+            print(self.gripcontacts)
             for i in range(len(self.gripcontacts)):
                 sql = "INSERT INTO freeairgrip(idobject, contactpnt0, contactpnt1, \
                         contactnormal0, contactnormal1, rotmat, jawwidth, idhand) \
@@ -254,7 +275,7 @@ class Freegrip(fgcp.FreegripContactpairs):
                        dc.mat4ToStr(self.griprotmats[i]), str(self.gripjawwidth[i]), idhand)
                 gdb.execute(sql)
         else:
-            print "Grasps already saved or duplicated filename!"
+            print("Grasps already saved or duplicated filename!")
 
     def removeFgrpccShow(self, base):
         """
@@ -404,7 +425,7 @@ class Freegrip(fgcp.FreegripContactpairs):
         if self.counter >= self.facetpairs.shape[0]:
             return
         else:
-            print str(self.counter) + "/" + str(self.facetpairs.shape[0]-1)
+            print(str(self.counter) + "/" + str(self.facetpairs.shape[0]-1))
 
             facetpair = self.facetpairs[self.counter]
             facetidx0 = facetpair[0]
@@ -473,7 +494,7 @@ class Freegrip(fgcp.FreegripContactpairs):
         if self.counter2 >= discretesize:
             self.counter2 = 0
 
-        print str(self.counter) + "/" + str(self.facetpairs.shape[0]-1)
+        print(str(self.counter) + "/" + str(self.facetpairs.shape[0]-1))
 
         facetpair = self.facetpairs[self.counter]
         facetidx0 = facetpair[0]
@@ -481,7 +502,7 @@ class Freegrip(fgcp.FreegripContactpairs):
 
         for j, contactpair in enumerate(self.gripcontactpairs_precc[self.counter]):
             if j == 0:
-                print j, contactpair
+                print(j, contactpair)
                 # for angleid in range(discretesize):
                 angleid = self.counter2
                 cctpnt0 = contactpair[0] + plotoffsetfp * self.facetnormals[facetidx0]
@@ -537,7 +558,7 @@ class Freegrip(fgcp.FreegripContactpairs):
         npnodeobj.attachNewNode(geomnodeobj)
         npnodeobj.reparentTo(base.render)
 
-    def showAllGrips(self):
+    def showAllGrips(self, handpkg):
         """
         showAllGrips
 
@@ -553,8 +574,9 @@ class Freegrip(fgcp.FreegripContactpairs):
             hndjawwidth = self.gripjawwidth[i]
             # show grasps
             # tmprtq85 = rtq85nm.Rtq85NM(hndcolor=[.7, .7, 0.7, .7])
-            tmprtq85 = rtq85nm.Rtq85NM(hndcolor=[0, 1, 0, .5])
-            tmprtq85.setMat(hndrotmat)
+            # tmprtq85 = rtq85nm.Rtq85NM(hndcolor=[0, 1, 0, .5])
+            tmprtq85 = handpkg.newHandNM(hndcolor=[0, 1, 0, .5])
+            tmprtq85.setMat(pandanpmat4 = hndrotmat)
             tmprtq85.setJawwidth(hndjawwidth)
             # tmprtq85.setJawwidth(80)
             tmprtq85.reparentTo(base.render)
@@ -587,14 +609,15 @@ if __name__=='__main__':
     # objpath = os.path.join(this_dir, "objects", "sandpart.stl")
     # objpath = os.path.join(this_dir, "objects", "ttube.stl")
     # objpath = os.path.join(this_dir, "objects", "tool.stl")
-    # objpath = os.path.join(this_dir, "objects", "tool2.stl")
+    objpath = os.path.join(this_dir, "objects", "tool2.stl")
     # objpath = os.path.join(this_dir, "objects", "planewheel.stl")
     # objpath = os.path.join(this_dir, "objects", "planelowerbody.stl")
     # objpath = os.path.join(this_dir, "objects", "planefrontstay.stl")
     # objpath = os.path.join(this_dir, "objects", "planerearstay.stl")
-    objpath = os.path.join(this_dir, "objects", "planerearstay2.stl")
+    # objpath = os.path.join(this_dir, "objects", "planerearstay2.stl")
 
     handpkg = rtq85nm
+    # handpkg = hrp5threenm
     freegriptst = Freegrip(objpath, handpkg, readser=False, torqueresist = 50)
 
     # freegriptst.segShow(base, togglesamples=False, togglenormals=False,
@@ -616,7 +639,7 @@ if __name__=='__main__':
     #     freegriptst.removeFgrpcc(base)
     #     freegriptst.removeHndcc(base)
     #     toc = time.clock()
-    #     print toc-tic
+    #     print(toc-tic)
     #     fo.write(os.path.basename(objpath)+' '+str(toc-tic)+'\n')
     # fo.close()
 
@@ -644,7 +667,7 @@ if __name__=='__main__':
     # freegriptst.removeFgrpcc(base)
     # def updateshow(task):
     #     freegriptst.pairShow(base, togglecontacts=True, togglecontactnormals=True)
-    #     # print task.delayTime
+    #     # print(task.delayTime)
     #     # if abs(task.delayTime-13) < 1:
     #     #     task.delayTime -= 12.85
     #     return task.again
@@ -661,7 +684,7 @@ if __name__=='__main__':
     #     # freegriptst.removeFgrpccShow(base)
     #     # freegriptst.removeFgrpccShowLeft(base)
     #     freegriptst.removeHndccShow(base)
-    # #     # print task.delayTime
+    # #     # print(task.delayTime)
     # #     # if abs(task.delayTime-13) < 1:
     # #     #     task.delayTime -= 12.85
     #     return task.again
@@ -688,5 +711,5 @@ if __name__=='__main__':
     # freegriptst.bulletworld.setDebugNode(debugNP.node())
     # taskMgr.add(updateworld, "updateworld", extraArgs=[freegriptst.bulletworld], appendTask=True)
 
-    freegriptst.showAllGrips()
+    freegriptst.showAllGrips(handpkg)
     base.run()

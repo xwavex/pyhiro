@@ -1,9 +1,9 @@
 import numpy as np
-import exceptions as ep
+# import exceptions as ep
 import utils.robotmath as rm
 import pandaplotutils.pandactrl as pandactrl
 import pandaplotutils.pandageom as pg
-import hrp5ik
+from . import hrp5ik
 
 class Hrp5Robot():
     def __init__(self):
@@ -65,7 +65,7 @@ class Hrp5Robot():
         """
 
         if armid!="rgt" and armid!="lft":
-            raise ep.ValueError("Armid must be 'rgt' or 'lft'")
+            raise ValueError("Armid must be 'rgt' or 'lft'")
 
         armlj = self.rgtarm
         if armid == "lft":
@@ -100,7 +100,7 @@ class Hrp5Robot():
         """
 
         if armid != "rgt" and armid != "lft":
-            raise ep.ValueError
+            raise ValueError
 
         armlj = self.rgtarm
         if armid == "lft":
@@ -125,7 +125,7 @@ class Hrp5Robot():
         """
 
         if armid!="rgt" and armid!="lft":
-            raise ep.ValueError
+            raise ValueError
 
         armlj = self.rgtarm
         if armid == "lft":
@@ -187,7 +187,7 @@ class Hrp5Robot():
         """
 
         if armid!="rgt" and armid!="lft":
-            raise ep.ValueError
+            raise ValueError
 
         armlj = self.rgtarm
         if armid == "lft":
@@ -212,7 +212,7 @@ class Hrp5Robot():
         """
 
         if armid!="rgt" and armid!="lft":
-            raise ep.ValueError("Armid must be 'rgt' or 'lft'")
+            raise ValueError("Armid must be 'rgt' or 'lft'")
 
         armlj = self.rgtarm
         if armid == "lft":
@@ -234,7 +234,7 @@ class Hrp5Robot():
         """
 
         if armid!="rgt" and armid!="lft":
-            raise ep.ValueError
+            raise ValueError
 
         armlj = self.rgtarm
         if armid == "lft":
