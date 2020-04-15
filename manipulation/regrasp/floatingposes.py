@@ -6,7 +6,7 @@ import itertools
 import MySQLdb as mdb
 import numpy as np
 from manipulation.grip.robotiq85 import rtq85nm
-from manipulation.grip.hrp5three import hrp5threenm
+# from manipulation.grip.hrp5three import hrp5threenm
 from panda3d.bullet import BulletWorld
 from panda3d.core import *
 
@@ -150,8 +150,8 @@ class FloatingPoses(object):
             # hand0 = self.handpkg.newHandNM(hndcolor=[1, 0, 0, .1])
             # hand1 = self.handpkg.newHandNM(hndcolor=[1, 0, 0, .1])
             pairidlist = list(itertools.combinations(range(len(self.freegripids)), 2))
-            print(len(pairidlist)/5000+1)
-            for i in range(100,len(pairidlist),len(pairidlist)/5000+1):
+            print("len(pairidlist), /5000+1 : " + str(len(pairidlist)) + ", " + str(len(pairidlist)/5000+1))
+            for i in range(100,len(pairidlist),int(len(pairidlist)/5000+1)):
             # for i0, i1 in pairidlist:
                 i0, i1 = pairidlist[i]
                 print(i, len(pairidlist))
@@ -732,14 +732,14 @@ if __name__=="__main__":
 
     base = pandactrl.World(lookatp=[0,0,0])
 
-    # handpkg = rtq85nm
-    handpkg = hrp5threenm
+    handpkg = rtq85nm
+    # handpkg = hrp5threenm
     gdb = db.GraspDB()
 
     this_dir, this_filename = os.path.split(__file__)
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "ttube.stl")
-    objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "tool2.stl")
-    # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "sandpart.stl")
+    # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "tool2.stl")
+    objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "sandpart.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planerearstay.stl")
     fpose = FloatingPoses(objpath, gdb, handpkg, base)
     # fpose.showIcomat4s(base.render)

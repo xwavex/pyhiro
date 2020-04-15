@@ -16,6 +16,8 @@ from panda3d.bullet import BulletWorld
 import time
 from robotsim.nextage import nxt
 
+import numpy as np
+
 class TwoObjAss(object):
     """
     the class uses genAvailableFAGs to compute grasps for the assembly of two objects
@@ -258,10 +260,10 @@ class TwoObjAss(object):
         tic = time.clock()
         for fpid in range(len(self.gridsfloatingposemat4s)):
             toc = time.clock()
-            print toc-tic
+            print(toc-tic)
             if fpid != 0:
-                print "remaining time", (toc-tic)*len(self.gridsfloatingposemat4s)/fpid-(toc-tic)
-            print fpid, len(self.gridsfloatingposemat4s)
+                print("remaining time", (toc-tic)*len(self.gridsfloatingposemat4s)/fpid-(toc-tic))
+            print(fpid, len(self.gridsfloatingposemat4s))
             # gen correspondence between freeairgripid and index
             # indagoffa means index of assgrips whose freeairgripid are xxx
             indagoffa0 = {}
@@ -297,10 +299,10 @@ class TwoObjAss(object):
             assdir1to0 = apmat.xformVec(self.assDirect1to0)
             assdir0to1 = apmat.xformVec(-self.assDirect1to0)
             toc = time.clock()
-            print toc-tic
+            print(toc-tic)
             if fpid != 0:
-                print "remaining time", (toc-tic)*len(self.gridsfloatingposemat4s)/fpid-(toc-tic)
-            print fpid, len(self.gridsfloatingposemat4s)
+                print("remaining time", (toc-tic)*len(self.gridsfloatingposemat4s)/fpid-(toc-tic))
+            print(fpid, len(self.gridsfloatingposemat4s))
             ### right hand # rgt = 0
             armname = 'rgt'
             assgikfeas0 = []
@@ -434,11 +436,13 @@ class TwoObjAss(object):
         i0list = range(len(ass0gripidfreeair))
         i1list = range(len(ass1gripidfreeair))
         pairidlist = list(itertools.product(i0list, i1list))
-        print len(pairidlist)/10000+1
+        print(">>>>> " + str(len(pairidlist)))
+        print(len(pairidlist)/10000+1)
+        # for i in np.arange(0,len(pairidlist),len(pairidlist)/10000+1):
         for i in range(0,len(pairidlist),len(pairidlist)/10000+1):
             # for i0, i1 in pairidlist:
             i0, i1 = pairidlist[i]
-            print i, len(pairidlist)
+            print(i, len(pairidlist))
             hand0.setMat(ass0griprotmat4s[i0])
             hand0.setJawwidth(ass0gripjawwidth[i0])
             hand1.setMat(ass1griprotmat4s[i1])
@@ -448,11 +452,11 @@ class TwoObjAss(object):
             result = self.bulletworld.contactTestPair(hndbullnodei0, hndbullnodei1)
             if not result.getNumContacts():
                 self.handpairList.append([ass0gripidfreeair[i0], ass1gripidfreeair[i1]])
-        # print ass0gripidfreeair
-        # print self.icoass0gripidfreeair[0]
-        # print ass1gripidfreeair
-        # print self.icoass1gripidfreeair[0]
-        # print self.handpairList
+        # print(ass0gripidfreeair)
+        # print(self.icoass0gripidfreeair[0])
+        # print(ass1gripidfreeair)
+        # print(self.icoass1gripidfreeair[0])
+        # print(self.handpairList)
         # assert "compare"
 
     def __saveIKtoDB(self, idrobot):
@@ -730,9 +734,11 @@ if __name__ == '__main__':
     gdb = db.GraspDB()
 
     this_dir, this_filename = os.path.split(__file__)
-    obj0path = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planefrontstay.stl")
+    # obj0path = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planefrontstay.stl")
+    obj0path = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "sandpart.stl")
     obj0Mat4 = Mat4.identMat()
-    obj1path = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planewheel.stl")
+    # obj1path = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planewheel.stl")
+    obj1path = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "sandpart.stl")
     obj1Mat4 = Mat4(obj0Mat4)
     obj1Mat4.setCell(3,1,32)
     obj1Mat4.setCell(3,2,10)
@@ -774,8 +780,8 @@ if __name__ == '__main__':
     toass.updateDBwithHandPairs()
     toass.updateDBwithIK(nxtrobot)
     toass.loadIKFeasibleAGPairsFromDB(nxtrobot)
-    print len(toass.icoass0gripcontacts)
-    print len(toass.icoass1gripcontacts)
+    print(len(toass.icoass0gripcontacts))
+    print(len(toass.icoass1gripcontacts))
 
     # # g0
     # ass0gripcontacts = toass.icoass0gripcontacts[poseind]

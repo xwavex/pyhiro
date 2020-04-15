@@ -80,6 +80,7 @@ class TablePlacements(object):
                  freetabletopplacement.idobject=object.idobject AND object.name LIKE '%s'" % self.dbobjname
         result = gdb.execute(sql)
         if len(result) == 0:
+            print("Select freetabletopplacement for object = " + str(self.dbobjname))
             # 1) select the freetabletopplacement
             sql = "SELECT freetabletopplacement.idfreetabletopplacement, freetabletopplacement.rotmat \
                         FROM freetabletopplacement,object WHERE freetabletopplacement.idobject = object.idobject \
@@ -349,10 +350,10 @@ if __name__ == '__main__':
     base = pandactrl.World(camp=[1000,400,1000], lookatp=[400,0,0])
     this_dir, this_filename = os.path.split(__file__)
     print("BEGIN")
-    # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "sandpart.stl")
+    objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "sandpart.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "ttube.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "tool.stl")
-    objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "tool2.stl")
+    # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "tool2.stl")
     # done 20170307
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planewheel.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planelowerbody.stl")
@@ -360,9 +361,9 @@ if __name__ == '__main__':
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planefrontstay.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planerearstay.stl")
 
-    from manipulation.grip.hrp5three import hrp5threenm
-    handpkg = hrp5threenm
-    # handpkg = rtq85nm
+    # from manipulation.grip.hrp5three import hrp5threenm
+    # handpkg = hrp5threenm
+    handpkg = rtq85nm
     print(objpath)
     tps = TablePlacements(objpath, handpkg)
 

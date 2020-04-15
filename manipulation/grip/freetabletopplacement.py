@@ -4,8 +4,8 @@ import os
 
 import MySQLdb as mdb
 import numpy as np
-# from manipulation.grip.robotiq85 import rtq85nm
-from manipulation.grip.hrp5three import hrp5threenm
+from manipulation.grip.robotiq85 import rtq85nm
+# from manipulation.grip.hrp5three import hrp5threenm
 from panda3d.bullet import BulletWorld
 from panda3d.bullet import BulletDebugNode
 from panda3d.core import *
@@ -55,8 +55,8 @@ class FreeTabletopPlacement(object):
         self.handpkg = handpkg
         self.handname = handpkg.getHandName()
         print("HandName: " + str(self.handname))
-        self.hand = handpkg.newHandNM(hndcolor=[0,1,0,.1])
-        # self.rtq85hnd = rtq85nm.Rtq85NM(hndcolor=[1, 0, 0, .1])
+        # self.hand = handpkg.newHandNM(hndcolor=[0,1,0,.1])
+        self.rtq85hnd = rtq85nm.Rtq85NM(hndcolor=[1, 0, 0, .1])
 
         # for dbsave
         # each tpsmat4 corresponds to a set of tpsgripcontacts/tpsgripnormals/tpsgripjawwidth list
@@ -174,8 +174,8 @@ class FreeTabletopPlacement(object):
             for j, rotmat in enumerate(self.freegriprotmats):
                 tpsgriprotmat = rotmat * self.tpsmat4s[i]
                 # check if the hand collide with tabletop
-                # tmprtq85 = self.rtq85hnd
-                tmphnd = self.hand
+                tmphnd = self.rtq85hnd
+                # tmphnd = self.hand
                 # tmprtq85 = rtq85nm.Rtq85NM(hndcolor=[1, 0, 0, 1])
                 initmat = tmphnd.getMat()
                 initjawwidth = tmphnd.jawwidth
@@ -360,9 +360,11 @@ class FreeTabletopPlacement(object):
                        FROM freetabletopplacement,object WHERE \
                        freetabletopplacement.idobject = object.idobject AND object.name LIKE '%s'" % self.dbobjname
         result = self.gdb.execute(sql)
+        print("grpshow len(result) = " + str(len(result)))
         if len(result) != 0:
-            idfreetabletopplacement = int(result[3][0])
-            objrotmat  = dc.strToMat4(result[3][1])
+            # WHY int(result[3][0])?????
+            idfreetabletopplacement = int(result[0][0])
+            objrotmat  = dc.strToMat4(result[0][1])
             # show object
             geom = pg.packpandageom(self.objtrimesh.vertices,
                                     self.objtrimesh.face_normals,
@@ -382,8 +384,8 @@ class FreeTabletopPlacement(object):
                 hndrotmat = dc.strToMat4(resultrow[0])
                 hndjawwidth = float(resultrow[1])
                 # show grasps
-                # tmprtq85 = rtq85nm.Rtq85NM(hndcolor=[0, 1, 0, .1])
-                tmprtq85 = hrp5threenm.Hrp5ThreeNM(jawwidth=hndjawwidth, hndcolor = [0, 1, 0, .1])
+                tmprtq85 = rtq85nm.Rtq85NM(hndcolor=[0, 1, 0, .1])
+                # tmprtq85 = hrp5threenm.Hrp5ThreeNM(jawwidth=hndjawwidth, hndcolor = [0, 1, 0, .1])
                 tmprtq85.setMat(pandanpmat4 = hndrotmat)
                 tmprtq85.setJawwidth(hndjawwidth)
                 # tmprtq85.setJawwidth(80)
@@ -461,10 +463,10 @@ if __name__ == '__main__':
 
     base = pandactrl.World(camp=[700,300,700], lookatp=[0,0,0])
     this_dir, this_filename = os.path.split(__file__)
-    # objpath = os.path.join(this_dir, "objects", "sandpart.stl")
+    objpath = os.path.join(this_dir, "objects", "sandpart.stl")
     # objpath = os.path.join(this_dir, "objects", "ttube.stl")
     # objpath = os.path.join(this_dir, "objects", "tool.stl")
-    objpath = os.path.join(this_dir, "objects", "tool2.stl")
+    # objpath = os.path.join(this_dir, "objects", "tool2.stl")
     # objpath = os.path.join(this_dir, "objects", "planewheel.stl")
     # objpath = os.path.join(this_dir, "objects", "planelowerbody.stl")
     # objpath = os.path.join(this_dir, "objects", "planefrontstay.stl")
@@ -474,9 +476,9 @@ if __name__ == '__main__':
 
     print("freetabletopplacement Step 1")
 
-    from manipulation.grip.hrp5three import hrp5threenm
-    handpkg = hrp5threenm
-    # handpkg = rtq85nm
+    # from manipulation.grip.hrp5three import hrp5threenm
+    # handpkg = hrp5threenm
+    handpkg = rtq85nm
     print("freetabletopplacement Step 2")
     gdb = db.GraspDB()
     tps = FreeTabletopPlacement(objpath, handpkg, gdb)

@@ -619,9 +619,9 @@ def getMotionSequence(regrip, id, choice):
 if __name__=='__main__':
     print("Hrp2KRobot: 1")
     gdb = db.GraspDB()
-    # handpkg = rtq85nm
+    handpkg = rtq85nm
     # nxtrobot = nxt.NxtRobot()
-    handpkg = hrp5threenm
+    # handpkg = hrp5threenm
     # hrp5nrobot = hrp5n.Hrp5NRobot()
     print("Hrp2KRobot: 2")
     hrp2k = hrp2k.Hrp2KRobot()
@@ -633,11 +633,11 @@ if __name__=='__main__':
     # ttube.stl
     print("Hrp2KRobot: 4")
     this_dir, this_filename = os.path.split(__file__)
-    # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "sandpart.stl")
+    objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "sandpart.stl")
     # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "ttube.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0], "grip", "objects", "tool.stl")
     print("Hrp2KRobot: 5")
-    objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "tool2.stl")
+    # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "tool2.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0], "grip", "objects", "planewheel.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0], "grip", "objects", "planelowerbody.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0], "grip", "objects", "planefrontstay.stl")

@@ -848,6 +848,7 @@ class RegripTppFp():
 
         # for handover
         nfp = len(self.floatingposes.gridsfloatingposemat4s)
+        print("nfp = " + str(nfp))
         xdist = 10
         x = range(300,501,xdist)
         y = range(-50,50,100*xdist/nfp)
