@@ -170,6 +170,7 @@ class RegripTppFp():
             # nubmer of discreted rotation
             self.angles = list(set(map(float, tpsrows[:,1])))
             # for plotting
+            print("__buildGraphs SET STUFF FOR PLOTTING!")
             self.fttpsids = list(set(map(int, tpsrows[:,2])))
             self.nfttps = len(self.fttpsids)
 
@@ -261,6 +262,8 @@ class RegripTppFp():
             for globalidedgesid in globalidsedges:
                 for edge in list(itertools.combinations(globalidsedges[globalidedgesid], 2)):
                     self.regg.add_edge(*edge, weight=1, edgetype = 'transfer')
+        else:
+            print("GRAPH for " + str(armname) + " not created, because sql not satisfied")
 
     def __bridgeGraph(self):
         for fpind, objrotmat4 in enumerate(self.floatingposes.gridsfloatingposemat4s):
@@ -851,7 +854,7 @@ class RegripTppFp():
         print("nfp = " + str(nfp))
         xdist = 10
         x = range(300,501,xdist)
-        y = range(-50,50,100*xdist/nfp)
+        y = range(-50,50,int(100*xdist/nfp))
 
         transitedges = []
         transferedges = []
@@ -888,8 +891,8 @@ class RegripTppFp():
                     anglevalue0 = self.regg.nodes[nid0]['angle']
                     ggid0 = self.regg.nodes[nid0]['globalgripid']
                     tabletopposition0 = self.regg.nodes[nid0]['tabletopposition']
-                    xyzpos0 = map(add, self.xyzglobalgrippos[fttpid0][anglevalue0][ggid0],
-                                  [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]])
+                    xyzpos0 = list(map(add, self.xyzglobalgrippos[fttpid0][anglevalue0][ggid0],
+                                  [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]]))
                     if nid0.startswith('rgt'):
                         xyzpos0[1] = xyzpos0[1]-800
                     if nid0.startswith('lft'):
@@ -911,8 +914,8 @@ class RegripTppFp():
                     anglevalue1 = self.regg.nodes[nid1]['angle']
                     ggid1 = self.regg.nodes[nid1]['globalgripid']
                     tabletopposition1 = self.regg.nodes[nid1]['tabletopposition']
-                    xyzpos1 = map(add, self.xyzglobalgrippos[fttpid1][anglevalue1][ggid1],
-                                  [tabletopposition1[0], tabletopposition1[1], tabletopposition1[2]])
+                    xyzpos1 = list(map(add, self.xyzglobalgrippos[fttpid1][anglevalue1][ggid1],
+                                  [tabletopposition1[0], tabletopposition1[1], tabletopposition1[2]]))
                     if nid1.startswith('rgt'):
                         xyzpos1[1] = xyzpos1[1]-800
                     if nid1.startswith('lft'):
@@ -965,10 +968,10 @@ class RegripTppFp():
                 gid1 = self.regg.nodes[nid1]['globalgripid']
                 tabletopposition0 = self.regg.nodes[nid0]['tabletopposition']
                 tabletopposition1 = self.regg.nodes[nid1]['tabletopposition']
-                xyzpos0 = map(add, self.xyzglobalgrippos_startgoal[gid0],
-                              [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]])
-                xyzpos1 = map(add, self.xyzglobalgrippos_startgoal[gid1],
-                              [tabletopposition1[0], tabletopposition1[1], tabletopposition1[2]])
+                xyzpos0 = list(map(add, self.xyzglobalgrippos_startgoal[gid0],
+                              [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]]))
+                xyzpos1 = list(map(add, self.xyzglobalgrippos_startgoal[gid1],
+                              [tabletopposition1[0], tabletopposition1[1], tabletopposition1[2]]))
                 if reggedgedata['edgetype'] is 'startrgttransit':
                     startrgttransitedges.append([xyzpos0[:2], xyzpos1[:2]])
                 if reggedgedata['edgetype'] is 'goalrgttransit':
@@ -996,8 +999,8 @@ class RegripTppFp():
                     anglevalue0 = self.regg.nodes[nid0]['angle']
                     ggid0 = self.regg.nodes[nid0]['globalgripid']
                     tabletopposition0 = self.regg.nodes[nid0]['tabletopposition']
-                    xyzpos0 = map(add, self.xyzglobalgrippos[fttpid0][anglevalue0][ggid0],
-                                  [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]])
+                    xyzpos0 = list(map(add, self.xyzglobalgrippos[fttpid0][anglevalue0][ggid0],
+                                  [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]]))
                     if nid0.startswith('rgt'):
                         xyzpos0[1] = xyzpos0[1]-800
                     if nid0.startswith('lft'):
@@ -1006,8 +1009,8 @@ class RegripTppFp():
                 else:
                     gid0 = self.regg.nodes[nid0]['globalgripid']
                     tabletopposition0 = self.regg.nodes[nid0]['tabletopposition']
-                    xyzpos0 = map(add, self.xyzglobalgrippos_startgoal[gid0],
-                                  [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]])
+                    xyzpos0 = list(map(add, self.xyzglobalgrippos_startgoal[gid0],
+                                  [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]]))
                 if nid1.startswith('ho'):
                     fpind1 = self.regg.nodes[nid1]['floatingposeind']
                     fpgpind1 = self.regg.nodes[nid1]['floatingposegrippairind']
@@ -1026,8 +1029,8 @@ class RegripTppFp():
                     anglevalue1 = self.regg.nodes[nid1]['angle']
                     ggid1 = self.regg.nodes[nid1]['globalgripid']
                     tabletopposition1 = self.regg.nodes[nid1]['tabletopposition']
-                    xyzpos1 = map(add, self.xyzglobalgrippos[fttpid1][anglevalue1][ggid1],
-                                  [tabletopposition1[0], tabletopposition1[1], tabletopposition1[2]])
+                    xyzpos1 = list(map(add, self.xyzglobalgrippos[fttpid1][anglevalue1][ggid1],
+                                  [tabletopposition1[0], tabletopposition1[1], tabletopposition1[2]]))
                     if nid1.startswith('rgt'):
                         xyzpos1[1] = xyzpos1[1]-800
                     if nid1.startswith('lft'):
@@ -1036,8 +1039,8 @@ class RegripTppFp():
                 else:
                     ggid1 = self.regg.nodes[nid1]['globalgripid']
                     tabletopposition1 = self.regg.nodes[nid1]['tabletopposition']
-                    xyzpos1 = map(add, self.xyzglobalgrippos_startgoal[ggid1],
-                                  [tabletopposition1[0], tabletopposition1[1], tabletopposition1[2]])
+                    xyzpos1 = list(map(add, self.xyzglobalgrippos_startgoal[ggid1],
+                                  [tabletopposition1[0], tabletopposition1[1], tabletopposition1[2]]))
                 if reggedgedata['edgetype'].startswith('startgoalrgt'):
                     startgoalrgttransferedges.append([xyzpos0[:2], xyzpos1[:2]])
                 if reggedgedata['edgetype'].startswith('startgoallft'):
@@ -1192,10 +1195,10 @@ class RegripTppFp():
             gid1 = self.regg.nodes[nid1]['globalgripid']
             tabletopposition0 = self.regg.nodes[nid0]['tabletopposition']
             tabletopposition1 = self.regg.nodes[nid1]['tabletopposition']
-            xyzpos0 = map(add, xyzglobalgrippos[fttpid0][anglevalue0][str(gid0)],
-                          [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]])
-            xyzpos1 = map(add, xyzglobalgrippos[fttpid1][angelvalue1][str(gid1)],
-                          [tabletopposition1[0], tabletopposition1[1], tabletopposition1[2]])
+            xyzpos0 = list(map(add, xyzglobalgrippos[fttpid0][anglevalue0][str(gid0)],
+                          [tabletopposition0[0], tabletopposition0[1], tabletopposition0[2]]))
+            xyzpos1 = list(map(add, xyzglobalgrippos[fttpid1][angelvalue1][str(gid1)],
+                          [tabletopposition1[0], tabletopposition1[1], tabletopposition1[2]]))
             # 3d
             if reggedgedata['edgetype'] is 'transit':
                 transitedges.append([xyzpos0, xyzpos1])
@@ -1213,7 +1216,7 @@ if __name__=='__main__':
     gdb = db.GraspDB()
 
     handpkg = rtq85nm
-    hrp5nrobot = hrp5n.Hrp5Robot()
+    # hrp5nrobot = hrp5n.Hrp5Robot()
     nxtrobot = nxt.NxtRobot()
 
     base = pandactrl.World(camp=[700,300,600], lookatp=[0,0,0])

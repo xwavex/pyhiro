@@ -42,7 +42,7 @@ def getMotionSequence(regrip, id, choice):
         directshortestpaths = regrip.directshortestpaths_startlftgoallft
 
     if len(directshortestpaths) == 0:
-        print "no path found"
+        print("no path found")
         return
 
     pathnidlist = directshortestpaths[id]
@@ -365,7 +365,7 @@ def getMotionSequence(regrip, id, choice):
                 objmat4list.append(objmat4b)
                 objmat4list.append(objmat4b)
             else:
-                print regrip.regg.edge[pathnidlist[i]][pathnidlist[i+1]]['edgetype']
+                print(regrip.regg.edge[pathnidlist[i]][pathnidlist[i+1]]['edgetype'])
                 # not two node path, middle nodes, if transfer
                 ## middle first
                 if nid.startswith('ho'):
@@ -494,7 +494,7 @@ def getMotionSequence(regrip, id, choice):
             # not two node path, end nodes, transfer
             ## second to last node
             nid = pathnidlist[i]
-            print nid
+            print(nid)
             if nid.startswith('ho'):
                 pass
             else:
@@ -627,12 +627,16 @@ if __name__=='__main__':
     # ttube.stl
     this_dir, this_filename = os.path.split(__file__)
     objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "ttube.stl")
+    # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "sandpart.stl")
     # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "tool.stl")
     # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "planewheel.stl")
     # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "planelowerbody.stl")
     # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "planefrontstay.stl")
     # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "planerearstay.stl")
+
+    print("REGRIP START")
     regrip = regriptppfp.RegripTppFp(objpath, nxtrobot, handpkg, gdb, base)
+    print("REGRIP END")
 
     # ttube
     goalrotmat4 = Mat4(-0.707106769085,0.707106769085,0.0,0.0,0.707106769085,0.707106769085,-0.0,0.0,0.0,0.0,-1.0,0.0,350.004150391,249.998901367,-16.9616088867,1.0)
@@ -664,9 +668,11 @@ if __name__=='__main__':
     #
     import time
     tic = time.clock()
+    print("regrip.findshortestpath BEGIN")
     regrip.findshortestpath(startrotmat4, goalrotmat4, base)
+    print("regrip.findshortestpath END")
     toc = time.clock()
-    print toc-tic
+    print(toc-tic)
     # assert False
     #
     pltfig = plt.figure()
@@ -690,8 +696,8 @@ if __name__=='__main__':
                 nxtmnp[0].detachNode()
             if objmnp[0] is not None:
                 objmnp[0].detachNode()
-            print counter[0]
-            print numikrms[counter[0]]
+            print(counter[0])
+            print(numikrms[counter[0]])
             nxtrobot.movealljnts([numikrms[counter[0]][0], 0, 0]+numikrms[counter[0]][1].tolist()+numikrms[counter[0]][2].tolist() )
             nxtmnp[0] = nxtplot.genmnp(nxtrobot, handpkg, jawwidthrgt=jawwidth[counter[0]][0], jawwidthlft=jawwidth[counter[0]][1])
             nxtrobot.goinitpose()
