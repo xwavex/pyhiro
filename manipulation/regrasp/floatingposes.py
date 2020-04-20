@@ -115,6 +115,7 @@ class FloatingPoses(object):
         self.freegripcontacts = freeairgripdata[1]
         self.freegripnormals = freeairgripdata[2]
         self.freegriprotmats = freeairgripdata[3]
+        
         self.freegripjawwidth = freeairgripdata[4]
 
     def __genPandaRotmat4(self, icolevel=1, angles=[0,45,90,135,180,225,270,315]):
@@ -167,6 +168,7 @@ class FloatingPoses(object):
             pickle.dump(self.handpairList, open("tmp.pickle", mode="wb"))
         else:
             self.handpairList = pickle.load(open("tmp.pickle", mode="rb"))
+        # print("self.handpairList = " + str(self.handpairList))
 
 
     def genFPandGs(self, grids, icolevel=1, angles=[0,45,90,135,180,225,270,315]):
@@ -392,11 +394,17 @@ class FloatingPoses(object):
         author: weiwei
         date: 20170301
         """
+        print("updateDBwithFGPairs")
+        print("VOHER len(self.handpairList) = " + str(len(self.handpairList)))
 
         if len(self.handpairList) == 0:
             self.genHandPairs(base, loadser)
+
+        print("NACHER len(self.handpairList) = " + str(len(self.handpairList)))
+
         tic = time.clock()
         for fpid in range(len(self.gridsfloatingposemat4s)):
+            print("fpid iteration: " + str(fpid))
             toc = time.clock()
             print(toc-tic)
             if fpid != 0:
@@ -405,11 +413,29 @@ class FloatingPoses(object):
             # gen correspondence between freeairgripid and index
             # indfgoffa means index of floatinggrips whose freeairgripid are xxx
             indfgoffa = {}
+
+            print("len(self.floatinggripidfreeair[" + str(fpid) + "]) = " + str(len(self.floatinggripidfreeair[fpid])))
+
+            # Hier koennte ich auch ueber alle freegriprotmats itertieren...
             for i in range(len(self.floatinggripidfreeair[fpid])):
+                # print(">> self.floatinggripidfreeair[fpid] = " + str(self.floatinggripidfreeair[fpid]))
                 indfgoffa[self.floatinggripidfreeair[fpid][i]] = i
+                # print("indfgoffa[" + str(self.floatinggripidfreeair[fpid][i]) + "] = " + str(indfgoffa[self.floatinggripidfreeair[fpid][i]]))
             # handidpair_indfg is the pairs using index of floatinggrips
             handidpair_indfg = []
+            lenHL = len(self.handpairList)
+            countttttttt = 0
             for handidpair in self.handpairList:
+                print("Process " + str(countttttttt) + "/" + str(lenHL))
+                countttttttt = countttttttt + 1
+                # print("len(handidpair_indfg) = " + str(len(handidpair_indfg)))
+                hidp0 = handidpair[0]
+                print("handidpair[0] = " + str(handidpair[0]))
+                hidp1 = handidpair[1]
+                print("handidpair[1] = " + str(handidpair[1]))
+                print("indfgoffa[handidpair[0]] = " + str(indfgoffa[hidp0]))
+                print("indfgoffa[handidpair[1]] = " + str(indfgoffa[hidp1]))
+
                 handidpair_indfg.append([indfgoffa[handidpair[0]], indfgoffa[handidpair[1]]])
                 # if handidpair_indfg[0] is right, 1 is left
                 sql = "INSERT IGNORE INTO floatinggripspairs VALUES (%d, %d)" % \
@@ -737,9 +763,10 @@ if __name__=="__main__":
     gdb = db.GraspDB()
 
     this_dir, this_filename = os.path.split(__file__)
+    objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planewheel.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "ttube.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "tool2.stl")
-    objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "sandpart.stl")
+    # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "sandpart.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planerearstay.stl")
     fpose = FloatingPoses(objpath, gdb, handpkg, base)
     # fpose.showIcomat4s(base.render)
@@ -756,21 +783,24 @@ if __name__=="__main__":
         for y in [0]:
             for z in range(150,151,100):
                 grids.append([x,y,z])
+
     fpose.genFPandGs(grids)
     fpose.saveToDB()
     fpose.loadFromDB()
     fpose.updateDBwithFGPairs()
-    # nxtrobot = nxt.NxtRobot()
+
+    nxtrobot = nxt.NxtRobot()
     # hrp5nrobot = hrp5n.Hrp5NRobot()
-    hrp2k = hrp2k.Hrp2KRobot()
-    # fpose.updateDBwithIK(robot=nxtrobot)
+    # hrp2k = hrp2k.Hrp2KRobot()
+
+    fpose.updateDBwithIK(robot=nxtrobot)
     # fpose.updateDBwithIK(robot=hrp5nrobot)
-    fpose.updateDBwithIK(robot=hrp2k)
+    # fpose.updateDBwithIK(robot=hrp2k)
     # for i in range(1,len(fpose.gridsfloatingposemat4s),len(fpose.floatingposemat4)):
     #     fpose.plotOneFPandG(base.render, i)
-    # fpose.loadIKFeasibleFGPairsFromDB(robot=nxtrobot)
+    fpose.loadIKFeasibleFGPairsFromDB(robot=nxtrobot)
     # fpose.loadIKFeasibleFGPairsFromDB(robot=hrp5nrobot)
-    fpose.loadIKFeasibleFGPairsFromDB(robot=hrp2k)
+    # fpose.loadIKFeasibleFGPairsFromDB(robot=hrp2k)
     # fpose.plotOneFPandG(base.render, 0)4
     fpose.plotOneFPandGPairs(base.render, 0)
 

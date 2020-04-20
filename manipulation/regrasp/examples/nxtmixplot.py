@@ -626,10 +626,10 @@ if __name__=='__main__':
 
     # ttube.stl
     this_dir, this_filename = os.path.split(__file__)
-    objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "ttube.stl")
+    # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "ttube.stl")
     # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "sandpart.stl")
     # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "tool.stl")
-    # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "planewheel.stl")
+    objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "planewheel.stl")
     # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "planelowerbody.stl")
     # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "planefrontstay.stl")
     # objpath = os.path.join(os.path.split(os.path.split(this_dir)[0])[0], "grip", "objects", "planerearstay.stl")
@@ -639,15 +639,15 @@ if __name__=='__main__':
     print("REGRIP END")
 
     # ttube
-    goalrotmat4 = Mat4(-0.707106769085,0.707106769085,0.0,0.0,0.707106769085,0.707106769085,-0.0,0.0,0.0,0.0,-1.0,0.0,350.004150391,249.998901367,-16.9616088867,1.0)
-    startrotmat4 = Mat4(0.000547349976841, 2.33689494422e-08, -0.999999821186, 0.0, 2.33689494422e-08, 1.0, 2.33817445405e-08, 0.0, 0.999999821186, -2.33817445405e-08, 0.000547349976841, 0.0, 520.001556396, -249.997833252, -39.9998168945, 1.0)
+    # goalrotmat4 = Mat4(-0.707106769085,0.707106769085,0.0,0.0,0.707106769085,0.707106769085,-0.0,0.0,0.0,0.0,-1.0,0.0,350.004150391,249.998901367,-16.9616088867,1.0)
+    # startrotmat4 = Mat4(0.000547349976841, 2.33689494422e-08, -0.999999821186, 0.0, 2.33689494422e-08, 1.0, 2.33817445405e-08, 0.0, 0.999999821186, -2.33817445405e-08, 0.000547349976841, 0.0, 520.001556396, -249.997833252, -39.9998168945, 1.0)
     #tool
     # startrotmat4 = Mat4(-0.0176398064941,-0.0176398064941,-0.99968880415,0.0,-0.707106769085,0.707106769085,0.0,0.0,0.706886708736,0.706886708736,-0.0249464549124,0.0,225.010162354,100,44.9175643921,1.0)
     # startrotmat4 = Mat4(0.129405856133,0.129405856133,0.98311150074,0.0,0.707106769085,-0.707106769085,0.0,0.0,0.69516479969,0.69516479969,-0.183007523417,0.0,227.126983643,-327.023590088,74.7615509033,1.0)
     # goalrotmat4 = Mat4(-1.0,1.22464685259e-16,0.0,0.0,-1.22464685259e-16,-1.0,0.0,0.0,0.0,0.0,1.0,0.0,294.747955322,-300.0731293559074,-3.99246982852e-06,1.0)
     # planewheel
-    # startrotmat4 = Mat4(0.707106769085,0.707106769085,0.0,0.0,-4.32978030171e-17,4.32978030171e-17,-1.0,0.0,-0.707106769085,0.707106769085,6.12323426293e-17,0.0,400.0,-400.0,29.9999980927,1.0)
-    # goalrotmat4 = Mat4(0.707106769085,-0.707106769085,0.0,0.0,4.32978030171e-17,4.32978030171e-17,-1.0,0.0,0.707106769085,0.707106769085,6.12323426293e-17,0.0,400.0,-1.7017070846e-15,29.9999980927,1.0)
+    startrotmat4 = Mat4(0.707106769085,0.707106769085,0.0,0.0,-4.32978030171e-17,4.32978030171e-17,-1.0,0.0,-0.707106769085,0.707106769085,6.12323426293e-17,0.0,400.0,-400.0,29.9999980927,1.0)
+    goalrotmat4 = Mat4(0.707106769085,-0.707106769085,0.0,0.0,4.32978030171e-17,4.32978030171e-17,-1.0,0.0,0.707106769085,0.707106769085,6.12323426293e-17,0.0,400.0,-1.7017070846e-15,29.9999980927,1.0)
     # planelowerbody
     # startrotmat4 = Mat4(1.35963113277e-32,6.12323426293e-17,-1.0,0.0,-1.0,2.22044604925e-16,0.0,0.0,2.22044604925e-16,1.0,6.12323426293e-17,0.0,399.997558594,-16.3771038055,74.2884140015,1.0)
     # goalrotmat4 = Mat4(1.35963113277e-32,6.12323426293e-17,-1.0,0.0,-1.0,2.22044604925e-16,0.0,0.0,2.22044604925e-16,1.0,6.12323426293e-17,0.0,399.997558594,-216.377105713,74.2884140015,1.0)
@@ -678,8 +678,8 @@ if __name__=='__main__':
     pltfig = plt.figure()
     regrip.plotgraph(pltfig)
     id = 0
-    # choice = 'startlftgoallft'
-    choice = 'startrgtgoalrgt'
+    choice = 'startlftgoallft'
+    # choice = 'startrgtgoalrgt'
     # choice = 'startlftgoalrgt'
     # choice = 'startrgtgoallft'
     regrip.plotshortestpath(pltfig, id = id, choice = choice)

@@ -165,12 +165,14 @@ class RegripTppFp():
                 object.name LIKE '%s' AND angle.value IN (0.0, 45.0, 90.0, 135.0, 180.0, 225.0, 270.0, 315.0)" \
                 % self.dbobjname
         result = self.gdb.execute(sql)
+        print("Watch OUT! " + str(len(result)))
         if len(result) != 0:
             tpsrows = np.array(result)
             # nubmer of discreted rotation
             self.angles = list(set(map(float, tpsrows[:,1])))
             # for plotting
             print("__buildGraphs SET STUFF FOR PLOTTING!")
+            print(">>>>>>> STUFF : " + str(map(int, tpsrows[:,2])))
             self.fttpsids = list(set(map(int, tpsrows[:,2])))
             self.nfttps = len(self.fttpsids)
 

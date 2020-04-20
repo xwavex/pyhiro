@@ -6,7 +6,7 @@ The following libraries are used
 1. Panda3D
 2. Networkx
 3. Numpy, Scipy
-4. MySQLdb
+4. MySQLdbgit push --set-upstream origin master
 
 The following executable programs are used:
 

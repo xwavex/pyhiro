@@ -86,14 +86,11 @@ class GraspDB(object):
         print("loadFreeAirGrip: objname = " + str(objname) + ", handname = " + str(handname) + ", len(data) = " + str(len(data)))
         if len(data) != 0:
             for i in range(len(data)):
-                # DLW TODO
-                # freegripid.append(int(data[i][0]))
-                freegripid.append(i)
+                freegripid.append(int(data[i][0]))
                 freegripcontacts.append([dc.strToV3(data[i][1]), dc.strToV3(data[i][2])])
                 freegripnormals.append([dc.strToV3(data[i][3]), dc.strToV3(data[i][4])])
                 freegriprotmats.append(dc.strToMat4(data[i][5]))
                 freegripjawwidth.append(float(data[i][6]))
-
             return [freegripid, freegripcontacts, freegripnormals, freegriprotmats, freegripjawwidth]
         else:
             return None

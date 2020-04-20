@@ -62,6 +62,8 @@ class TablePlacements(object):
         date: 20161215, osaka
         """
 
+        print("tableplacements STEP 1")
+
         # save discretiezed angle
         sql = "SELECT * FROM angle"
         result = gdb.execute(sql)
@@ -73,6 +75,8 @@ class TablePlacements(object):
             gdb.execute(sql)
         else:
             print("Angles already set!")
+
+        print("tableplacements STEP 2")
 
         # save tabletopplacements
         sql = "SELECT idtabletopplacements FROM tabletopplacements,freetabletopplacement,object WHERE \
@@ -96,6 +100,9 @@ class TablePlacements(object):
             result = np.asarray(gdb.execute(sql))
             idanglelist = [int(x) for x in result[:, 0]]
             anglevaluelist = [float(x) for x in result[:, 1]]
+
+            print("tableplacements STEP 3")
+
             # 3) save to database
             sql = "INSERT INTO tabletopplacements(rotmat, tabletopposition, idangle, idfreetabletopplacement) VALUES "
             for ttoppos in positionlist:
@@ -114,6 +121,8 @@ class TablePlacements(object):
                               (dc.mat4ToStr(varrotmat), dc.v3ToStr(ttoppos), idangle, idfree)
             sql = sql[:-2]+";"
             gdb.execute(sql)
+
+            print("tableplacements STEP 4")
         else:
             print("Tabletopplacements already exist!")
 
@@ -124,12 +133,18 @@ class TablePlacements(object):
                  freeairgrip.idobject=object.idobject AND object.name LIKE '%s' AND \
                   freeairgrip.idhand = %d" % (self.dbobjname, idhand)
         result = gdb.execute(sql)
+
+        print("tableplacements STEP 5 : " + str(len(result)))
+
         if len(result) == 0:
             sql = "SELECT freetabletopplacement.idfreetabletopplacement \
                     FROM freetabletopplacement,object WHERE \
                     freetabletopplacement.idobject = object.idobject AND \
                     object.name LIKE '%s'" % self.dbobjname
             result = gdb.execute(sql)
+
+            print("tableplacements STEP 6 : " + str(len(result)))
+
             if len(result) == 0:
                 raise ValueError("Plan the freetabletopplacement  first!")
             for idfree in result:
@@ -147,13 +162,20 @@ class TablePlacements(object):
                         freeairgrip.idhand = %d AND \
                         freetabletopplacement.idfreetabletopplacement = %d" % (idhand, idfree)
                 result1 = gdb.execute(sql)
+
+                print("tableplacements STEP 7 : " + str(len(result1)))
+
                 if len(result1) == 0:
+                    print("tableplacements STEP 8 No grasp available")
                     # no grasp availalbe?
                     continue
                 # sql = "INSERT INTO tabletopgrips(contactpnt0, contactpnt1, contactnormal0, \
                 #         contactnormal1, rotmat, jawwidth, idfreeairgrip, idtabletopplacements) VALUES "
                 if len(result1) > 20000:
+                    print("tableplacements STEP 9")
                     result1 = result1[0::int(len(result1)/20000.0)]
+
+                print("tableplacements STEP 10")
                 result1 = np.asarray(result1)
                 idtabletopplacementslist = [int(x) for x in result1[:,0]]
                 tabletoppositionlist = [dc.strToV3(x) for x in result1[:,1]]
@@ -165,11 +187,18 @@ class TablePlacements(object):
                 freegriprotmatlist = [dc.strToMat4(x) for x in result1[:,7]]
                 freegripjawwidthlist = [float(x) for x in result1[:,8]]
                 freegripidlist = [int(x) for x in result1[:,9]]
-                for idtabletopplacements, ttoppos, rotangle, cct0, cct1, cctn0, cctn1, \
-                    freegriprotmat, jawwidth, idfreegrip in zip(idtabletopplacementslist, \
+
+                counnnnt = 0
+
+                zzz = zip(idtabletopplacementslist, \
                     tabletoppositionlist, rotanglelist, freegripcontactpoint0list, freegripcontactpoint1list, \
                     freegripcontactnormal0list, freegripcontactnormal1list, freegriprotmatlist, freegripjawwidthlist, \
-                    freegripidlist):
+                    freegripidlist)
+
+                # print("tableplacements STEP 11 " + str(len(zzz)))
+
+                for idtabletopplacements, ttoppos, rotangle, cct0, cct1, cctn0, cctn1, \
+                    freegriprotmat, jawwidth, idfreegrip in zzz:
                     rotmat = rm.rodrigues([0, 0, 1], rotangle)
                     # rotmat4 = Mat4(rotmat[0][0], rotmat[0][1], rotmat[0][2], 0,
                     #                rotmat[1][0], rotmat[1][1], rotmat[1][2], 0,
@@ -181,6 +210,10 @@ class TablePlacements(object):
                     ttpcctn0 = rotmat4.xformVec(cctn0)
                     ttpcctn1 = rotmat4.xformVec(cctn1)
                     ttpgriprotmat = freegriprotmat*rotmat4
+
+                    print("tableplacements INSERT " + str(counnnnt))
+                    counnnnt = counnnnt + 1
+
                     sql = "INSERT INTO tabletopgrips(contactpnt0, contactpnt1, contactnormal0, contactnormal1, \
                             rotmat, jawwidth, idfreeairgrip, idtabletopplacements) VALUES \
                             ('%s', '%s', '%s', '%s', '%s', '%s', %d, %d) " % \
@@ -343,19 +376,19 @@ class TablePlacements(object):
 
 if __name__ == '__main__':
     nxtrobot = nxt.NxtRobot()
-    hrp5robot = hrp5.Hrp5Robot()
-    hrp5n = hrp5n.Hrp5NRobot()
-    hrp2k = hrp2k.Hrp2KRobot()
+    # hrp5robot = hrp5.Hrp5Robot()
+    # hrp5n = hrp5n.Hrp5NRobot()
+    # hrp2k = hrp2k.Hrp2KRobot()
 
     base = pandactrl.World(camp=[1000,400,1000], lookatp=[400,0,0])
     this_dir, this_filename = os.path.split(__file__)
     print("BEGIN")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "sandpart.stl")
-    objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "ttube.stl")
+    # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "ttube.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "tool.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "tool2.stl")
     # done 20170307
-    # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planewheel.stl")
+    objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planewheel.stl")
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planelowerbody.stl")
     # done 20170313
     # objpath = os.path.join(os.path.split(this_dir)[0]+os.sep, "grip", "objects", "planefrontstay.stl")
@@ -417,8 +450,10 @@ if __name__ == '__main__':
     # # # tps.grpshow(base, gdb)
     # tps.updateDBwithIK(gdb, hrp5n, armname = "rgt")
     # tps.updateDBwithIK(gdb, hrp5n, armname = "lft")
+
     tps.updateDBwithIK(gdb, nxtrobot, armname = "rgt")
     tps.updateDBwithIK(gdb, nxtrobot, armname = "lft")
+
     # print("BEFORE rgt")
     # tps.updateDBwithIK(gdb, hrp2k, armname = "rgt")
     # print("AFTER rgt")
@@ -435,6 +470,7 @@ if __name__ == '__main__':
     # tps.bulletworldtable.setDebugNode(debugNP.node())
     #
     # taskMgr.add(updateworld, "updateworld", extraArgs=[tps.bulletworldtable], appendTask=True)
+    print("END")
     tps.grpshow(base, gdb)
 
     base.run()
